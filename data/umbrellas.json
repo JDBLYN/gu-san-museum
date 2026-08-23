@@ -128,6 +128,120 @@
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         }
       ]
+    },
+    {
+      "id": "hangzhou-yuhang",
+      "name": "余杭油纸伞",
+      "alias": "余杭纸伞",
+      "origin": "浙江省杭州市余杭区瓶窑镇（塘埠村、西坞村一带）",
+      "geometry": {
+        "ribCount": 36,
+        "ribLength": 51,
+        "canopyRise": 0,
+        "openAmount": 1,
+        "shaftLength": 66
+      },
+      "material": {
+        "canopyTexture": "westlake-ink.png",
+        "canopyColor": "#e9c97e",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#765c14"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "以毛竹为骨、桃花纸（或手工皮纸）为面、外刷桐油，可开合；选料讲究、做工精巧，美观轻便、经久耐用。",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "常见成品伞面直径约 97—102 厘米，中棒长约 66 厘米。",
+          "level": "史实",
+          "_source": "https://artsandculture.google.com/asset/%e7%8e%b0%e4%bb%a3%e4%bd%99%e6%9d%ad%e6%b1%9f%e5%8d%97%e6%98%a5%e8%89%b2%e6%b2%b9%e7%ba%b8%e4%bc%9e/iAFgwC-5Y8ecMw"
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "以毛竹为伞骨，桃花纸（或手工皮纸）为伞面，用柿漆黏合防水、桐油罩面防腐；另用发线穿伞、苦竹作伞柄等。",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "传统伞面以桐油素面为主，也可手绘山水、花鸟图案；今有梅兰竹菊等手绘纹样。",
+          "level": "史实",
+          "_source": "https://artsandculture.google.com/asset/modern-oil-paper-umbrella-with-painted-patterns-of-plum-blossoms-orchids-bamboo-and-chrysanthemums/JAFFasZ2iASMZg?hl=zh-cn"
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "油纸与「有子」谐音，寓意多子多福；伞架为竹，寓意节节高升；伞形为圆，寓意美满团圆。",
+          "level": "史实",
+          "_source": "http://m.cnr.cn/news/20151216/t20151216_520809214.shtml"
+        }
+      },
+      "craftSteps": [
+        {
+          "name": "选竹",
+          "desc": "挑选三至五年生的成熟毛竹作伞骨原料，竹料要挺直、竹节均匀。竹选得不好，伞骨容易断、容易变形。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "制骨",
+          "desc": "把竹筒锯成段、刮去青皮，再劈成细条伞骨，打眼、穿伞，做成伞架。骨条粗细不一，伞形就不周正，开合也不顺滑。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "浸纸",
+          "desc": "伞面用的桃花纸先浸入柿漆——柿漆用青油柿捣汁制成，有黏性又不粘纸，还能防水。浸得不匀，纸面会渗水。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "糊面",
+          "desc": "把浸过柿漆的桃花纸一张张糊到伞骨上，拼成完整伞面。糊得不平、留气泡，伞面会起皱漏水。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "阴干",
+          "desc": "刚糊好的伞不能暴晒，要挂在室内慢慢阴干，纸面才平整不裂。急着晒干，纸会发脆变形。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "绘花",
+          "desc": "在干透的伞面上手绘山水、花鸟等图案，也可保持素面。手绘是余杭纸伞的装饰特色。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "上油",
+          "desc": "把桐油（或熟桐油）一层层均匀刷在伞面，起防腐、拒变的作用。油刷不匀，伞面会渗水发脆。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        },
+        {
+          "name": "装柄",
+          "desc": "装上手柄、收边定型，一把余杭纸伞才算完成。收边不牢，伞面容易开线。",
+          "image": "",
+          "level": "史实",
+          "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
+        }
+      ]
     }
   ]
 }

@@ -322,9 +322,13 @@ function renderCraft(panelId, steps) {
     const card = document.createElement('div');
     card.className = 'craft-step';
 
-    const img = document.createElement('img');
-    img.src = step.image; // 插画路径来自数据
-    img.alt = step.name;
+    // 步骤没配插画就不加图片（比如暂时还没有专属工序图的伞）
+    if (step.image) {
+      const img = document.createElement('img');
+      img.src = step.image; // 插画路径来自数据
+      img.alt = step.name;
+      card.appendChild(img);
+    }
 
     const name = document.createElement('h3');
     name.textContent = step.name; // 步骤名来自数据
@@ -332,7 +336,6 @@ function renderCraft(panelId, steps) {
     const desc = document.createElement('p');
     desc.textContent = step.desc; // 步骤说明来自数据
 
-    card.appendChild(img);
     card.appendChild(name);
     card.appendChild(desc);
     renderNote(card, step); // 标注：分级 · 来源
