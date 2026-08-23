@@ -1,4 +1,19 @@
 {
+  "patterns": [
+    { "name": "无贴图", "file": null },
+    { "name": "牡丹·朱红", "file": "peony-crimson.png" },
+    { "name": "西湖·墨", "file": "westlake-ink.png" },
+    { "name": "梅花·墨", "file": "plum-ink.png" },
+    { "name": "莲花·卷草", "file": "lotus-scroll.png" },
+    { "name": "仙鹤·云", "file": "crane-cloud.png" },
+    { "name": "蝙蝠·福", "file": "bat-fortune.png" },
+    { "name": "雨竹", "file": "rain-bamboo.png" },
+    { "name": "云雷", "file": "cloud-thunder.png" }
+  ],
+  "textures": {
+    "rib": "assets/textures/bamboo-rib.png",
+    "handle": "assets/textures/wood-handle.png"
+  },
   "umbrellas": [
     {
       "id": "luzhou-fenshui",

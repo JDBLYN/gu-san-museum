@@ -2,7 +2,8 @@
 // 这一版把伞放进中间，加上：缓慢自转、鼠标拖动旋转、滚轮缩放，
 // 右下角放两个控制：开合、纹样。
 //
-// 规则：这里不许硬编码任何一句文化文字，伞名都从 data/umbrellas.json 读。
+// 规则：这里不许硬编码任何一句文化文字，也不许写死图片路径——
+// 伞名、纹样名、图片路径都从 data/umbrellas.json 读。
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -29,41 +30,39 @@ const ROTATION_SPEED = 0.0015; // 自转速度：弧度/帧，越小越慢（60 
 const FADE_MS = 200;           // 切纹样淡入淡出：前后各 200 毫秒，共 400 毫秒
 let fade = null;               // 正在进行的淡入淡出（null = 没有）
 
-// 伞面纹样清单：文件名严格按 CLAUDE.md 的清单，不许引用清单外文件。
-// 名字是给下拉框看的界面标签（沿用调参台 lab.html 的叫法）。
-const PATTERNS = [
-  { name: '无贴图', file: null },
-  { name: '牡丹·朱红', file: 'peony-crimson.png' },
-  { name: '西湖·墨', file: 'westlake-ink.png' },
-  { name: '梅花·墨', file: 'plum-ink.png' },
-  { name: '莲花·卷草', file: 'lotus-scroll.png' },
-  { name: '仙鹤·云', file: 'crane-cloud.png' },
-  { name: '蝙蝠·福', file: 'bat-fortune.png' },
-  { name: '雨竹', file: 'rain-bamboo.png' },
-  { name: '云雷', file: 'cloud-thunder.png' },
-];
-
-// 预加载伞骨（竹）、手柄（木）两张材质贴图，只加载一次
+// 贴图统一从这里加载：路径来自 umbrellas.json，这里不写死任何图片路径。
+// 纹样清单、两张材质贴图的路径都在数据文件里，等数据读回来再加载。
 const textureLoader = new THREE.TextureLoader();
-const ribTexture = textureLoader.load('assets/textures/bamboo-rib.png');
-const handleTexture = textureLoader.load('assets/textures/wood-handle.png');
-ribTexture.colorSpace = THREE.SRGBColorSpace;   // 颜色按 sRGB 处理，颜色才准
-handleTexture.colorSpace = THREE.SRGBColorSpace;
+let ribTexture = null;        // 伞骨（竹）贴图，start() 里按数据路径加载
+let handleTexture = null;     // 手柄（木）贴图，同上
+const patternTextures = {};   // 各伞面纹样贴图，按文件名存，切换时零等待
 
-// 预加载 8 张伞面纹样，切换时零等待
-const patternTextures = {};
-for (const pt of PATTERNS) {
-  if (pt.file) {
-    const tex = textureLoader.load('assets/patterns/' + pt.file);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    patternTextures[pt.file] = tex;
-  }
+// 加载一张贴图，并统一按 sRGB 处理颜色（所有纹理颜色才准）
+function loadTexture(path) {
+  const tex = textureLoader.load(path);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// 预加载伞面纹样贴图（纹样清单来自数据文件）
+function preloadPatterns(patterns) {
+  patterns.forEach((pt) => {
+    if (pt.file) {
+      patternTextures[pt.file] = loadTexture('assets/patterns/' + pt.file);
+    }
+  });
 }
 
 // —— 开始：加载数据 ——
 async function start() {
   const response = await fetch('data/umbrellas.json');
   data = await response.json();
+
+  // 从数据读路径，再加载贴图、纹样（顺序：先有数据，后加载图）
+  ribTexture = loadTexture(data.textures.rib);
+  handleTexture = loadTexture(data.textures.handle);
+  preloadPatterns(data.patterns);
+
   buildCatalog(data.umbrellas);
   buildPatternOptions();
   setupTabs();
@@ -85,7 +84,7 @@ function buildCatalog(list) {
 // 纹样下拉框：填选项 + 绑定切换
 function buildPatternOptions() {
   const select = document.getElementById('pattern-select');
-  PATTERNS.forEach((pt) => {
+  data.patterns.forEach((pt) => {
     const opt = document.createElement('option');
     opt.value = pt.file == null ? '' : pt.file;
     opt.textContent = pt.name;
