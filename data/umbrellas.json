@@ -1,33 +1,36 @@
 {
   "umbrellas": [
     {
-      "id": "peony-crimson",
-      "name": "红牡丹油纸伞",
-      "textures": {
-        "pattern": "assets/patterns/peony-crimson.png",
-        "handle": "assets/textures/wood-handle.png"
-      },
+      "id": "luzhou-fenshui",
+      "name": "泸州分水油纸伞",
+      "alias": "",
+      "origin": "",
       "geometry": {
-        "canopyRadius": 1.0,
-        "canopyHeight": 0.45,
-        "ribCount": 30,
-        "ribRadius": 0.012,
-        "handleLength": 1.7,
-        "handleRadius": 0.035
+        "ribCount": 24,
+        "ribLength": 60,
+        "canopyRise": 0,
+        "openAmount": 1,
+        "shaftLength": 95
       },
-      "materials": {
-        "canopy": { "color": "#f2e2c0", "roughness": 0.6, "transmission": 0.6, "thickness": 0.25 },
-        "rib": { "color": "#5a4326", "roughness": 0.6 },
-        "handle": { "color": "#8a5a2b", "roughness": 0.55 }
+      "material": {
+        "canopyTexture": "",
+        "canopyColor": "#e9c97e",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#765c14"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
       },
       "culture": {
-        "parts": [
-          { "name": "伞面", "text": "【待核实】" },
-          { "name": "伞骨", "text": "【待核实】" },
-          { "name": "伞柄", "text": "【待核实】" }
-        ],
-        "why": "【待核实】"
-      }
+        "shape": "",
+        "size": "",
+        "materials": "",
+        "patternTheme": "",
+        "patternMeaning": ""
+      },
+      "craftSteps": []
     }
   ]
 }
