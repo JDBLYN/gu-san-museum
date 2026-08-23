@@ -1,18 +1,24 @@
 // 场景：相机、灯光、地面。伞本体不在这里，在 umbrella.js 里。
+// 本文件只管“舞台”——伞放进来之后看到的背景、光线、影子。
 
 import * as THREE from 'three';
 
+// 中性灰背景（调参台专用，干净、不抢伞的颜色）
+const BACKGROUND = 0x909090;
+
+// 对外唯一入口：搭好舞台，返回渲染器、场景、相机。
 export function createStage(canvas) {
   // 渲染器（把 3D 画到 canvas 上）
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;                    // 开阴影
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;   // 颜色更自然
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 柔和阴影（边缘模糊）
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; // 颜色更自然
   renderer.toneMappingExposure = 1.1;
 
-  // 场景：安静的深色背景，让暖黄的伞成为主角
+  // 场景
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x171a21);
+  scene.background = new THREE.Color(BACKGROUND);
 
   // 相机：站在斜前方看伞
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
@@ -25,34 +31,45 @@ export function createStage(canvas) {
   return { renderer, scene, camera };
 }
 
+// 灯光：一盏主光 + 一盏补光 + 一点点环境光
 function buildLights() {
   const group = new THREE.Group();
 
   // 环境光：让背光面不至于全黑
-  group.add(new THREE.AmbientLight(0x8a93a5, 0.45));
+  group.add(new THREE.AmbientLight(0xffffff, 0.45));
 
-  // 逆光（本项目的视觉核心）：从伞后方偏上照过来，
-  // 让伞面透亮、伞骨在伞面上显出剪影。
-  const back = new THREE.DirectionalLight(0xffe2b0, 2.4);
-  back.position.set(-2.2, 2.6, -3.2);
-  back.castShadow = true;
-  back.shadow.mapSize.set(1024, 1024);
-  group.add(back);
+  // 主光：从斜上方打过来，投出柔和阴影
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  key.position.set(3, 4, 2);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.radius = 6;   // 阴影边缘柔化
+  key.shadow.bias = -0.0002;
+  const box = 4;           // 阴影覆盖的范围（比伞大一点）
+  key.shadow.camera.left = -box;
+  key.shadow.camera.right = box;
+  key.shadow.camera.top = box;
+  key.shadow.camera.bottom = -box;
+  key.shadow.camera.near = 0.5;
+  key.shadow.camera.far = 20;
+  key.shadow.camera.updateProjectionMatrix();
+  group.add(key);
 
-  // 前侧补光：让正对镜头这一面看得清
-  const fill = new THREE.DirectionalLight(0xc4d2e6, 0.7);
-  fill.position.set(2, 1, 3);
+  // 补光：从另一侧补一点，让暗部能看清
+  const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+  fill.position.set(-2.5, 1, -1.5);
   group.add(fill);
 
   return group;
 }
 
+// 地面：一块承接阴影的灰色平面
 function buildFloor() {
-  const geometry = new THREE.CircleGeometry(2.4, 64);
-  const material = new THREE.MeshStandardMaterial({ color: 0x232833, roughness: 0.9 });
+  const geometry = new THREE.PlaneGeometry(10, 10);
+  const material = new THREE.MeshStandardMaterial({ color: 0xb0b0b0, roughness: 0.95 });
   const floor = new THREE.Mesh(geometry, material);
   floor.rotation.x = -Math.PI / 2; // 放平
   floor.position.y = -1.8;          // 在伞下方当“展台”
-  floor.receiveShadow = true;
+  floor.receiveShadow = true;        // 接住阴影
   return floor;
 }

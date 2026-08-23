@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>调参台 · 古伞文化馆</title>
+
+  <!-- 用 importmap 引入 Three.js，版本锁定 0.169.0，不装任何包 -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      display: flex;
+    }
+
+    /* 左侧：调参面板 */
+    #panel {
+      width: 260px;
+      flex: 0 0 260px;
+      background: #f4f2ee;
+      border-right: 1px solid #ddd8ce;
+      padding: 22px 18px;
+      overflow-y: auto;
+    }
+
+    #panel h1 { font-size: 18px; color: #3a352c; margin-bottom: 4px; }
+    #panel .sub { font-size: 12px; color: #8a8374; margin-bottom: 22px; }
+
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #4a4438;
+      margin-bottom: 6px;
+    }
+    .field label .val { color: #c23b2e; font-weight: 600; }
+    .field input[type="range"] { width: 100%; }
+
+    /* 右侧：3D 展台 */
+    #view { flex: 1; position: relative; min-width: 0; }
+    #stage {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    #stage:active { cursor: grabbing; }
+  </style>
+</head>
+<body>
+  <!-- 左边：滑块面板 -->
+  <div id="panel">
+    <h1>调参台</h1>
+    <p class="sub">拖动滑块，观察右边伞的变化</p>
+    <div id="fields"></div>
+  </div>
+
+  <!-- 右边：3D 伞 -->
+  <div id="view">
+    <canvas id="stage"></canvas>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { createStage } from './src/scene.js';
+    import { createUmbrella } from './src/umbrella.js';
+
+    const canvas = document.getElementById('stage');
+    const { renderer, scene, camera } = createStage(canvas);
+
+    // 鼠标拖动旋转、滚轮缩放
+    const controls = new OrbitControls(camera, canvas);
+    controls.target.set(0, -0.2, 0);
+    controls.enableDamping = true;   // 旋转带一点惯性，手感更顺
+    controls.dampingFactor = 0.08;
+
+    // 当前这把伞的参数（初始 = 生成器的默认值）
+    const params = {
+      ribCount: 24,
+      radius: 1.0,
+      canopyRise: 0.12,
+      openAmount: 1.0,
+      handleBottom: -1.0,
+    };
+
+    let umbrella = null;
+
+    function rebuild() {
+      if (umbrella) scene.remove(umbrella);
+      umbrella = createUmbrella(params);
+      scene.add(umbrella);
+    }
+
+    // 五个滑块的说明。
+    // 注意：umbrella.js 里没有直接叫“骨长”“中棒长度”的参数，
+    // 这里先映射到最接近的参数（详见下方注释）。
+    const SLIDERS = [
+      // 骨数 → ribCount，直接对应
+      { label: '骨数', min: 16, max: 40, step: 1, unit: ' 根',
+        value: params.ribCount,
+        apply: (v) => { params.ribCount = v; } },
+
+      // 骨长 → radius（伞骨长度 = √(半径² + 伞顶高²)，所以调半径会改变骨长）
+      { label: '骨长', min: 0.6, max: 1.6, step: 0.01, unit: '',
+        value: params.radius,
+        apply: (v) => { params.radius = v; } },
+
+      // 伞面弧垂 → canopyRise，直接对应
+      { label: '伞面弧垂', min: 0, max: 0.3, step: 0.01, unit: '',
+        value: params.canopyRise,
+        apply: (v) => { params.canopyRise = v; } },
+
+      // 开合量 → openAmount，直接对应（0 合拢，1 全开）
+      { label: '开合量', min: 0, max: 1, step: 0.01, unit: '',
+        value: params.openAmount,
+        apply: (v) => { params.openAmount = v; } },
+
+      // 中棒长度 → handleBottom（伞柄下探多远；这里用正数表示长度，越大棒越长）
+      { label: '中棒长度', min: 0.5, max: 1.5, step: 0.01, unit: '',
+        value: -params.handleBottom,
+        apply: (v) => { params.handleBottom = -v; } },
+    ];
+
+    const fields = document.getElementById('fields');
+    SLIDERS.forEach((s) => {
+      const field = document.createElement('div');
+      field.className = 'field';
+
+      const label = document.createElement('label');
+      const name = document.createElement('span');
+      name.textContent = s.label;
+      const val = document.createElement('span');
+      val.className = 'val';
+      val.textContent = s.value + s.unit;
+      label.appendChild(name);
+      label.appendChild(val);
+
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.min = s.min;
+      input.max = s.max;
+      input.step = s.step;
+      input.value = s.value;
+      input.addEventListener('input', () => {
+        const v = parseFloat(input.value);
+        val.textContent = v + s.unit;
+        s.apply(v);
+        rebuild();
+      });
+
+      field.appendChild(label);
+      field.appendChild(input);
+      fields.appendChild(field);
+    });
+
+    rebuild();
+
+    // 动画循环：每一帧画一次
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // 窗口大小变化时，重新匹配画布尺寸
+    function resize() {
+      const width = canvas.parentElement.clientWidth;
+      const height = canvas.parentElement.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+    }
+    window.addEventListener('resize', resize);
+
+    resize();
+    animate();
+  </script>
+</body>
+</html>
