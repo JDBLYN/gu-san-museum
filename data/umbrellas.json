@@ -50,7 +50,64 @@
           "_source": null
         }
       },
-      "craftSteps": []
+      "craftSteps": [
+        {
+          "name": "选竹",
+          "desc": "挑选竹身挺直、竹节均匀、没有虫蛀霉变的成熟楠竹。竹料是整把伞的底子，选得不好，伞骨容易断、容易变形，后面工序再用心也难补救。",
+          "image": "assets/craft/craft-01.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "制骨",
+          "desc": "把竹料剖成细条，再一步步削、磨成粗细均匀的伞骨。骨条粗细不一，伞面撑开后就会歪斜不平；削得均匀，伞形才周正，开合才顺滑。",
+          "image": "assets/craft/craft-02.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "装架",
+          "desc": "在伞骨上钻好孔，装进上巢、下巢，再套到中棒上，让骨条能绕中棒开合。孔位或巢位对不齐，伞一开骨条就互相卡住，整把伞就废了。",
+          "image": "assets/craft/craft-03.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "满穿",
+          "desc": "用线在伞骨之间一圈圈穿绕，把整副骨架连成一体。满穿能拉住每一根骨条、让伞面受力均匀；穿得松或漏穿，伞面会塌，也容易被风吹翻。",
+          "image": "assets/craft/craft-04.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "裱面",
+          "desc": "把手工皮纸按伞面裁好，一张张糊到伞骨上，拼成完整的伞面。糊得不平、留气泡或接缝不严，上油后就会起皱漏水，伞就挡不住雨了。",
+          "image": "assets/craft/craft-05.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "石印",
+          "desc": "用传统的石印手艺在伞面上印出图案花纹，让素面变成有纹样的伞面。这道工序要把图案印得位置正、纹路清晰；印偏或印糊了，整面伞面就花了，只能揭掉纸重新来过。",
+          "image": "assets/craft/craft-06.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "上油",
+          "desc": "在伞面上一遍遍刷桐油，让纸吃透油、变得防水耐用。油刷不匀或没刷透，伞面会渗水、发脆；刷匀了，伞面才经得起雨淋日晒。",
+          "image": "assets/craft/craft-07.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        },
+        {
+          "name": "成伞",
+          "desc": "把上好油的伞撑开晾干，让桐油干透定型，再收边、装上手柄，一把伞才算完成。没晾干就收，伞面会粘连、变形，前面的功夫就白费了。",
+          "image": "assets/craft/craft-08.png",
+          "level": "史实",
+          "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
+        }
+      ]
     }
   ]
 }
