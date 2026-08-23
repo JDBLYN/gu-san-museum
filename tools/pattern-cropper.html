@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>伞面图案裁剪器</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f0ede6;
+      color: #3a352c;
+    }
+
+    .app { display: flex; height: 100vh; }
+
+    /* 左侧：图片 + 圆形选区 */
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #d9d5cb;
+      overflow: hidden;
+    }
+
+    #view {
+      max-width: 100%;
+      max-height: 100%;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+      background: #fff;
+      cursor: move;
+      touch-action: none;
+    }
+
+    .hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #8a8374;
+      font-size: 15px;
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* 右侧：控制面板 */
+    .panel {
+      width: 270px;
+      flex: 0 0 270px;
+      background: #f7f5f0;
+      border-left: 1px solid #ddd8ce;
+      padding: 20px 18px;
+      overflow-y: auto;
+    }
+
+    .panel h1 { font-size: 17px; margin-bottom: 2px; }
+    .panel .sub { font-size: 12px; color: #8a8374; margin-bottom: 20px; }
+
+    .row { margin-bottom: 18px; }
+    .row label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+    .row label .val { color: #c23b2e; font-weight: 600; }
+    .row input[type="range"] { width: 100%; }
+
+    .check { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+
+    button {
+      width: 100%;
+      padding: 10px 0;
+      border: 1px solid #c23b2e;
+      background: #fff;
+      color: #c23b2e;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { background: #c23b2e; color: #fff; }
+    button.primary { background: #c23b2e; color: #fff; }
+    button.primary:hover { background: #a52f23; }
+    button:disabled { opacity: 0.5; cursor: default; }
+
+    .gap { height: 10px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 左侧：图片显示区 -->
+    <div class="stage" id="stage">
+      <canvas id="view"></canvas>
+      <div class="hint" id="hint">把图片拖到这里<br />或点右侧「选择本地图片」</div>
+    </div>
+
+    <!-- 右侧：控制面板 -->
+    <div class="panel">
+      <h1>伞面图案裁剪器</h1>
+      <p class="sub">本地处理，不上传</p>
+
+      <div class="row">
+        <button type="button" id="pickBtn">选择本地图片</button>
+      </div>
+
+      <div class="row">
+        <label class="check">
+          <input type="checkbox" id="whiteToggle" checked />
+          <span>去白底</span>
+        </label>
+      </div>
+
+      <div class="row">
+        <label>容差 <span class="val" id="tolVal">40</span></label>
+        <input type="range" id="tolerance" min="0" max="120" value="40" />
+      </div>
+
+      <div class="row">
+        <label>外圈羽化 <span class="val" id="featherVal">0</span></label>
+        <input type="range" id="feather" min="0" max="200" value="0" />
+      </div>
+
+      <div class="gap"></div>
+
+      <div class="row">
+        <button type="button" id="exportBtn" class="primary">导出 2048×2048 PNG</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="file" accept="image/*" style="display: none" />
+
+  <script>
+    // —— 元素引用 ——
+    const stage = document.getElementById('stage');
+    const view = document.getElementById('view');
+    const ctx = view.getContext('2d');
+    const hint = document.getElementById('hint');
+    const fileInput = document.getElementById('file');
+    const pickBtn = document.getElementById('pickBtn');
+    const whiteToggle = document.getElementById('whiteToggle');
+    const tolerance = document.getElementById('tolerance');
+    const feather = document.getElementById('feather');
+    const tolVal = document.getElementById('tolVal');
+    const featherVal = document.getElementById('featherVal');
+    const exportBtn = document.getElementById('exportBtn');
+
+    // —— 状态 ——
+    let img = null;               // 源图片
+    let circle = { cx: 0, cy: 0, r: 0 }; // 圆形选区（源图像素坐标）
+    let scale = 1;                // 显示缩放
+    let dragging = null;          // 'move' | 'resize' | null
+    let dragOffset = { dx: 0, dy: 0 }; // 拖动时保持手指与圆心的相对位置
+
+    // —— 图片加载 ——
+    function loadImage(src) {
+      const image = new Image();
+      image.onload = () => {
+        img = image;
+        // 初始选区：以图心为中心，尽量大的圆
+        circle = {
+          cx: img.width / 2,
+          cy: img.height / 2,
+          r: Math.min(img.width, img.height) / 2,
+        };
+        hint.style.display = 'none';
+        fitCanvas();
+        draw();
+      };
+      image.src = src;
+    }
+
+    function loadFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => loadImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+
+    // —— 画布适配：把源图缩到最大 640 显示 ——
+    function fitCanvas() {
+      const max = 640;
+      scale = max / Math.max(img.width, img.height);
+      view.width = Math.round(img.width * scale);
+      view.height = Math.round(img.height * scale);
+    }
+
+    // —— 绘制：图片 + 压暗遮罩 + 圆形选区线 + 中心十字 + 边缘手柄 ——
+    function draw() {
+      if (!img) return;
+      ctx.clearRect(0, 0, view.width, view.height);
+      ctx.drawImage(img, 0, 0, view.width, view.height);
+
+      const cx = circle.cx * scale;
+      const cy = circle.cy * scale;
+      const r = circle.r * scale;
+
+      // 选区外的部分压暗（用 evenodd：整块矩形里挖掉圆）
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, view.width, view.height);
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.fill('evenodd');
+      ctx.restore();
+
+      // 圆形选区线
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = '#c23b2e';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 中心十字
+      ctx.beginPath();
+      ctx.moveTo(cx - 9, cy); ctx.lineTo(cx + 9, cy);
+      ctx.moveTo(cx, cy - 9); ctx.lineTo(cx, cy + 9);
+      ctx.stroke();
+
+      // 边缘手柄（圆的右侧，拖它缩放）
+      const hx = (circle.cx + circle.r) * scale;
+      const hy = circle.cy * scale;
+      ctx.beginPath();
+      ctx.arc(hx, hy, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#c23b2e';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // —— 交互：把屏幕坐标换算成源图坐标 ——
+    function eventPos(e) {
+      const rect = view.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (view.width / rect.width);
+      const y = (e.clientY - rect.top) * (view.height / rect.height);
+      return { x: x / scale, y: y / scale };
+    }
+
+    view.addEventListener('pointerdown', (e) => {
+      if (!img) return;
+      const p = eventPos(e);
+      const dist = Math.hypot(p.x - circle.cx, p.y - circle.cy);
+      const edgeDist = Math.abs(dist - circle.r);
+
+      // 靠近圆周 → 缩放；在圆内 → 移动
+      if (edgeDist * scale < 14) {
+        dragging = 'resize';
+      } else if (dist < circle.r) {
+        dragging = 'move';
+        dragOffset = { dx: circle.cx - p.x, dy: circle.cy - p.y };
+      } else {
+        return;
+      }
+      view.setPointerCapture(e.pointerId);
+    });
+
+    view.addEventListener('pointermove', (e) => {
+      if (!dragging || !img) return;
+      const p = eventPos(e);
+      if (dragging === 'move') {
+        circle.cx = p.x + dragOffset.dx;
+        circle.cy = p.y + dragOffset.dy;
+      } else if (dragging === 'resize') {
+        circle.r = Math.hypot(p.x - circle.cx, p.y - circle.cy);
+      }
+      clampCircle();
+      draw();
+    });
+
+    view.addEventListener('pointerup', () => { dragging = null; });
+    view.addEventListener('pointercancel', () => { dragging = null; });
+
+    // 限制选区不超出图片
+    function clampCircle() {
+      circle.cx = Math.min(Math.max(circle.cx, 0), img.width);
+      circle.cy = Math.min(Math.max(circle.cy, 0), img.height);
+      const maxR = Math.min(circle.cx, circle.cy, img.width - circle.cx, img.height - circle.cy);
+      circle.r = Math.max(10, Math.min(circle.r, maxR));
+    }
+
+    // —— 导出：2048×2048 透明底 PNG ——
+    function exportImage() {
+      if (!img) { alert('请先载入一张图片'); return; }
+
+      exportBtn.disabled = true;
+      exportBtn.textContent = '正在导出…';
+
+      // 用 setTimeout 让按钮文字先刷新，再开始耗时计算
+      setTimeout(() => {
+        const SIZE = 2048;
+        const R = SIZE / 2; // 输出半径 1024
+        const whiteOn = whiteToggle.checked;
+        const tol = Number(tolerance.value);
+        const fea = Number(feather.value);
+
+        // 读源图像素
+        const srcCanvas = document.createElement('canvas');
+        srcCanvas.width = img.width;
+        srcCanvas.height = img.height;
+        const sctx = srcCanvas.getContext('2d');
+        sctx.drawImage(img, 0, 0);
+        const srcData = sctx.getImageData(0, 0, img.width, img.height);
+        const src = srcData.data;
+        const imgW = img.width;
+        const imgH = img.height;
+
+        // 输出画布
+        const out = document.createElement('canvas');
+        out.width = SIZE;
+        out.height = SIZE;
+        const octx = out.getContext('2d');
+        const outImg = octx.createImageData(SIZE, SIZE);
+        const dst = outImg.data;
+
+        const k = circle.r / R; // 源图 1px 对应输出多少（缩放系数）
+
+        for (let oy = 0; oy < SIZE; oy++) {
+          for (let ox = 0; ox < SIZE; ox++) {
+            const dx = ox - R;
+            const dy = oy - R;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const idx = (oy * SIZE + ox) * 4;
+
+            // 圆外：透明
+            if (dist > R) { dst[idx + 3] = 0; continue; }
+
+            // 输出坐标 → 源图坐标（以圆心对齐）
+            const sx = Math.min(Math.max(circle.cx + dx * k, 0), imgW - 1);
+            const sy = Math.min(Math.max(circle.cy + dy * k, 0), imgH - 1);
+
+            // 双线性采样源图颜色（内联，避免每像素一次函数调用）
+            const x0 = sx | 0, y0 = sy | 0;
+            const fx = sx - x0, fy = sy - y0;
+            const x1 = Math.min(x0 + 1, imgW - 1);
+            const y1 = Math.min(y0 + 1, imgH - 1);
+            const i00 = (y0 * imgW + x0) * 4;
+            const i10 = (y0 * imgW + x1) * 4;
+            const i01 = (y1 * imgW + x0) * 4;
+            const i11 = (y1 * imgW + x1) * 4;
+            const r = (src[i00] * (1 - fx) + src[i10] * fx) * (1 - fy) + (src[i01] * (1 - fx) + src[i11] * fx) * fy;
+            const g = (src[i00 + 1] * (1 - fx) + src[i10 + 1] * fx) * (1 - fy) + (src[i01 + 1] * (1 - fx) + src[i11 + 1] * fx) * fy;
+            const b = (src[i00 + 2] * (1 - fx) + src[i10 + 2] * fx) * (1 - fy) + (src[i01 + 2] * (1 - fx) + src[i11 + 2] * fx) * fy;
+
+            // 透明度
+            let alpha = 1;
+            if (whiteOn && tol > 0) {
+              // 越接近纯白越透明（容差控制“多白算白”）
+              const minC = Math.min(r, g, b);
+              const t = (minC - (255 - tol)) / tol;
+              if (t > 0) alpha *= (1 - Math.min(t, 1));
+            }
+            if (fea > 0) {
+              // 外圈羽化：靠近圆边时渐渐变透明
+              const f = (R - dist) / fea;
+              alpha *= Math.min(1, Math.max(0, f));
+            }
+
+            dst[idx] = r;
+            dst[idx + 1] = g;
+            dst[idx + 2] = b;
+            dst[idx + 3] = Math.round(alpha * 255);
+          }
+        }
+
+        octx.putImageData(outImg, 0, 0);
+
+        // 下载
+        out.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'pattern-cropped.png';
+          a.click();
+          URL.revokeObjectURL(url);
+          exportBtn.disabled = false;
+          exportBtn.textContent = '导出 2048×2048 PNG';
+        }, 'image/png');
+      }, 20);
+    }
+
+    // —— 事件绑定 ——
+    pickBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (f) loadFile(f);
+    });
+
+    // 拖拽图片到左侧区域
+    stage.addEventListener('dragover', (e) => e.preventDefault());
+    stage.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const f = e.dataTransfer.files[0];
+      if (f && f.type.startsWith('image/')) loadFile(f);
+    });
+
+    // 滑块数值显示
+    tolerance.addEventListener('input', () => { tolVal.textContent = tolerance.value; });
+    feather.addEventListener('input', () => { featherVal.textContent = feather.value; });
+
+    exportBtn.addEventListener('click', exportImage);
+  </script>
+</body>
+</html>
