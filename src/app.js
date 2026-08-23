@@ -24,6 +24,11 @@ let umbrella = null;       // 当前造出来的伞
 let openAmount = 1;        // 当前开合量（0 合拢，1 全开）
 let currentPattern = null; // 当前纹样文件名（null = 无贴图 / 纯色）
 
+// —— 动效参数 ——
+const ROTATION_SPEED = 0.0015; // 自转速度：弧度/帧，越小越慢（60 帧/秒下约 70 秒一圈）
+const FADE_MS = 200;           // 切纹样淡入淡出：前后各 200 毫秒，共 400 毫秒
+let fade = null;               // 正在进行的淡入淡出（null = 没有）
+
 // 伞面纹样清单：文件名严格按 CLAUDE.md 的清单，不许引用清单外文件。
 // 名字是给下拉框看的界面标签（沿用调参台 lab.html 的叫法）。
 const PATTERNS = [
@@ -88,7 +93,7 @@ function buildPatternOptions() {
   });
   select.addEventListener('change', () => {
     currentPattern = select.value === '' ? null : select.value;
-    rebuild();
+    applyPattern(); // 切纹样走淡入淡出，不直接重建
   });
 }
 
@@ -118,11 +123,9 @@ function selectUmbrella(id) {
   renderCulture(currentItem);
 }
 
-// 造伞：把当前参数交给 umbrella.js 生成一把新伞
-function rebuild() {
-  if (umbrella) scene.remove(umbrella);
-
-  umbrella = createUmbrella({
+// 用当前参数造一把新伞（只造，不放进场景，由 rebuild / applyPattern 决定怎么放）
+function buildUmbrella() {
+  return createUmbrella({
     // 这些参数都能直接从数据文件里读到
     ribCount: currentItem.geometry.ribCount,
     canopyRise: currentItem.geometry.canopyRise,
@@ -134,7 +137,88 @@ function rebuild() {
     textures: { rib: ribTexture, handle: handleTexture },
     canopyTexture: currentPattern ? patternTextures[currentPattern] : null,
   });
+}
+
+// 释放一把伞占用的几何体和材质，防止反复换伞把内存越堆越大。
+// 注意：只释放「这把伞自己的」几何体和材质；伞骨、手柄、纹样这三张贴图是全局共用的，
+// 释放材质不会连累贴图，所以贴图不用管。
+function disposeGroup(group) {
+  group.traverse((obj) => {
+    if (obj.isMesh) {
+      obj.geometry.dispose();
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      mats.forEach((m) => m.dispose());
+    }
+  });
+}
+
+// 立刻换伞（开合滑块、换整把伞时用，不需要过渡）
+function rebuild() {
+  cancelFade(); // 万一有淡入淡出进行到一半，先结束它
+  const next = buildUmbrella();
+  if (umbrella) {
+    scene.remove(umbrella);
+    disposeGroup(umbrella);
+  }
+  umbrella = next;
   scene.add(umbrella);
+}
+
+// 设置一把伞所有材质的透明度（淡入淡出用）。opacity = 1 表示完全不透明。
+function setGroupFade(group, opacity) {
+  group.traverse((obj) => {
+    if (!obj.isMesh) return;
+    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach((m) => {
+      const wantTransparent = opacity < 1;
+      if (m.transparent !== wantTransparent) {
+        m.transparent = wantTransparent; // 只有变透明才开这个开关
+        m.needsUpdate = true;            // 透明开关变化要通知渲染器重编译
+      }
+      m.opacity = opacity;
+    });
+  });
+}
+
+// 切纹样：旧伞先淡出、新伞再淡入，各 FADE_MS 毫秒（共 400 毫秒）
+function applyPattern() {
+  cancelFade(); // 上次没淡完就再来一次，先把上次收尾
+  const next = buildUmbrella();
+  next.rotation.y = umbrella.rotation.y; // 新伞接着旧伞的角度，不「跳一下」
+  scene.add(next);
+  setGroupFade(next, 0); // 新伞先全透明，等旧伞淡出后再显出来
+  fade = { start: performance.now(), oldGroup: umbrella, newGroup: next };
+  umbrella = next;
+}
+
+// 立刻结束进行中的淡入淡出：旧伞移除，新伞（当前 umbrella）恢复可见
+function cancelFade() {
+  if (!fade) return;
+  scene.remove(fade.oldGroup);
+  disposeGroup(fade.oldGroup);
+  setGroupFade(fade.newGroup, 1);
+  fade = null;
+}
+
+// 每一帧推进淡入淡出
+function updateFade() {
+  if (!fade) return;
+  const t = performance.now() - fade.start;
+  if (t < FADE_MS) {
+    // 前半段：旧伞淡出 1 → 0
+    setGroupFade(fade.oldGroup, 1 - t / FADE_MS);
+    setGroupFade(fade.newGroup, 0);
+  } else if (t < FADE_MS * 2) {
+    // 后半段：新伞淡入 0 → 1
+    setGroupFade(fade.oldGroup, 0);
+    setGroupFade(fade.newGroup, (t - FADE_MS) / FADE_MS);
+  } else {
+    // 结束：新伞完全可见，旧伞移除释放
+    setGroupFade(fade.newGroup, 1);
+    scene.remove(fade.oldGroup);
+    disposeGroup(fade.oldGroup);
+    fade = null;
+  }
 }
 
 // —— 下方文化解说：三个标签页的内容都从数据里读 ——
@@ -248,7 +332,8 @@ function renderCraft(panelId, steps) {
 // —— 动画循环：伞缓慢自转，每一帧画一次 ——
 function animate() {
   requestAnimationFrame(animate);
-  if (umbrella) umbrella.rotation.y += 0.004; // 缓慢自转
+  if (umbrella) umbrella.rotation.y += ROTATION_SPEED; // 缓慢自转
+  updateFade(); // 切纹样的淡入淡出
   controls.update();
   renderer.render(scene, camera);
 }
