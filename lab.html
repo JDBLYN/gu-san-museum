@@ -57,6 +57,35 @@
       cursor: pointer;
     }
 
+    /* 导出参数 */
+    #export { margin-top: 24px; border-top: 1px solid #ddd8ce; padding-top: 16px; }
+    #export .export-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+    #export button {
+      flex: 1;
+      padding: 8px 0;
+      border: 1px solid #c23b2e;
+      background: #fff;
+      color: #c23b2e;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    #export button:hover { background: #c23b2e; color: #fff; }
+    #export-output {
+      display: none;
+      margin: 0;
+      padding: 10px;
+      background: #2b2b2b;
+      color: #e7e2d6;
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 4px;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
     /* 右侧：3D 展台 */
     #view { flex: 1; position: relative; min-width: 0; }
     #stage {
@@ -76,6 +105,15 @@
     <h1>调参台</h1>
     <p class="sub">拖动滑块，观察右边伞的变化</p>
     <div id="fields"></div>
+
+    <!-- 导出当前参数 -->
+    <div id="export">
+      <div class="export-actions">
+        <button id="export-btn" type="button">导出当前参数</button>
+        <button id="copy-btn" type="button">一键复制</button>
+      </div>
+      <pre id="export-output"></pre>
+    </div>
   </div>
 
   <!-- 右边：3D 伞 -->
@@ -97,6 +135,9 @@
     controls.target.set(0, 0.1, 0);
     controls.enableDamping = true;   // 旋转带一点惯性，手感更顺
     controls.dampingFactor = 0.08;
+
+    // 灯光参数（导出时用）：主光角度、强度
+    const lightParams = { angle: 30, intensity: keyLight.intensity };
 
     // 当前这把伞的参数（初始 = 生成器的默认值）
     const params = {
@@ -183,13 +224,13 @@
 
       // 主光角度 → 主光的仰角（0=水平后方，90=正头顶）
       { label: '主光角度', min: 0, max: 90, step: 1, unit: '°',
-        value: 30, rebuild: false,
-        apply: (v) => { placeKeyLight(keyLight, v); } },
+        value: lightParams.angle, rebuild: false,
+        apply: (v) => { lightParams.angle = v; placeKeyLight(keyLight, v); } },
 
       // 主光强度 → keyLight.intensity
       { label: '主光强度', min: 0, max: 5, step: 0.1, unit: '',
-        value: keyLight.intensity, rebuild: false,
-        apply: (v) => { keyLight.intensity = v; } },
+        value: lightParams.intensity, rebuild: false,
+        apply: (v) => { lightParams.intensity = v; keyLight.intensity = v; } },
     ];
 
     const fields = document.getElementById('fields');
@@ -233,6 +274,36 @@
       field.appendChild(label);
       field.appendChild(input);
       fields.appendChild(field);
+    });
+
+    // —— 导出当前参数：把当前所有滑块的值整理成 JSON ——
+    function buildExportJSON() {
+      return {
+        ...params,                 // 所有伞参数（含 colors）
+        light: { ...lightParams }, // 灯光参数
+      };
+    }
+
+    const exportOutput = document.getElementById('export-output');
+    const exportBtn = document.getElementById('export-btn');
+    const copyBtn = document.getElementById('copy-btn');
+
+    exportBtn.addEventListener('click', () => {
+      exportOutput.textContent = JSON.stringify(buildExportJSON(), null, 2);
+      exportOutput.style.display = 'block';
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const json = JSON.stringify(buildExportJSON(), null, 2);
+      exportOutput.textContent = json;
+      exportOutput.style.display = 'block';
+      try {
+        await navigator.clipboard.writeText(json);
+        copyBtn.textContent = '已复制 ✓';
+      } catch (err) {
+        copyBtn.textContent = '复制失败，请手动全选';
+      }
+      setTimeout(() => { copyBtn.textContent = '一键复制'; }, 1500);
     });
 
     rebuild();
