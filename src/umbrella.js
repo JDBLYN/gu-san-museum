@@ -43,10 +43,11 @@ const DEFAULTS = {
   // 开合程度：0 = 合拢，1 = 完全张开
   openAmount: 1.0,
 
-  // 伞面材质（透光的核心；本步骤先不做贴图）
+  // 伞面材质（透光核心）
   transmission: 0.6,      // 透光率 0-1：越大越透，逆光时能透出光线
   roughness: 0.4,         // 伞面粗糙度：越小越光滑（油纸略带光泽）
-  canopyColor: '#e2b86a', // 伞面颜色：桐油纸暖黄
+  canopyColor: '#e2b86a', // 伞面颜色：桐油纸暖黄（无贴图时用）
+  canopyTexture: null,    // 伞面贴图：图片路径或已加载的 Texture；null=纯色
 
   // 其余部件的纯色
   colors: {
@@ -87,17 +88,32 @@ function cylinderBetween(a, b, radius, material, segments = 8) {
   return mesh;
 }
 
+// 把 canopyTexture（图片路径 / Texture 对象 / null）统一成 Texture 或 null。
+// 传字符串就现场加载；传 Texture 就用现成的；null 表示纯色。
+function toTexture(v) {
+  if (!v) return null;
+  if (typeof v === 'string') {
+    const tex = new THREE.TextureLoader().load(v);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+  return v; // 已经是 Texture，调用方已设好 colorSpace
+}
+
 // 材质：伞面用物理材质（支持透光），其余部件用标准材质。
 function makeMaterials(p) {
+  const canopyMap = toTexture(p.canopyTexture);
   return {
     shaft: new THREE.MeshStandardMaterial({ color: p.colors.shaft }),
     rib: new THREE.MeshStandardMaterial({ color: p.colors.rib, map: p.textures.rib }),
     strut: new THREE.MeshStandardMaterial({ color: p.colors.strut }),
     hub: new THREE.MeshStandardMaterial({ color: p.colors.hub }),
     // 伞面：MeshPhysicalMaterial，transmission 让逆光能透过来。
+    // 有贴图时用贴图本身的颜色（color 设白），没贴图时用纯色 canopyColor。
     // DoubleSide 双面渲染，里外都能看到。
     canopy: new THREE.MeshPhysicalMaterial({
-      color: p.canopyColor,
+      color: canopyMap ? 0xffffff : p.canopyColor,
+      map: canopyMap,
       roughness: p.roughness,
       transmission: p.transmission,
       thickness: 0.2, // 纸的厚度：给透射一点折射深度
@@ -199,9 +215,15 @@ function buildLowerHub(p, state, material) {
 
 // 伞面：ribCount 段构成的穹顶，边缘落在伞骨末端，中间有弧垂。
 // 随开合张开：伞骨张角变小则伞面收拢，弧垂也同步收为 0。
+//
+// UV 用极坐标映射：贴图是一张正圆的平面图，
+//   圆心对准伞顶，外圆对准伞骨末端。
+//   每个顶点：到中轴的水平距离 → 贴图半径，方位角 → 贴图角度，
+//   再把极坐标转成 0-1 的 uv。这样图案沿伞面展开不会被拉扯变形。
 function buildCanopy(p, geo, state, material) {
   const radial = 8; // 径向细分（让弧垂曲线圆滑）
   const positions = [];
+  const uvs = [];
   const indices = [];
 
   for (let ri = 0; ri <= radial; ri++) {
@@ -211,9 +233,19 @@ function buildCanopy(p, geo, state, material) {
     // 这一圈的水平半径与高度（伞骨张角 alpha 决定）
     const rr = t * geo.ribLength * Math.sin(state.alpha);
     const y = p.apexHeight - t * geo.ribLength * Math.cos(state.alpha) + bulge;
+
+    // 水平距离 rr 归一化：rr ÷ 伞边水平距离 = t（0=伞顶，1=伞边）。
+    // 贴图半径 = t × 0.5（圆心 0，外圆 0.5）。
+    const radialUV = t * 0.5;
+
     for (let si = 0; si <= p.ribCount; si++) {
       const theta = (si / p.ribCount) * Math.PI * 2;
       positions.push(rr * Math.cos(theta), y, rr * Math.sin(theta));
+      // 极坐标 (radialUV, theta) 转成 (u, v)
+      uvs.push(
+        0.5 + radialUV * Math.cos(theta),
+        0.5 + radialUV * Math.sin(theta)
+      );
     }
   }
 
@@ -230,6 +262,7 @@ function buildCanopy(p, geo, state, material) {
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
   const mesh = new THREE.Mesh(geometry, material);
