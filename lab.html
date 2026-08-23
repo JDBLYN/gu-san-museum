@@ -48,6 +48,14 @@
     }
     .field label .val { color: #c23b2e; font-weight: 600; }
     .field input[type="range"] { width: 100%; }
+    .field input[type="color"] {
+      width: 100%;
+      height: 32px;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
 
     /* 右侧：3D 展台 */
     #view { flex: 1; position: relative; min-width: 0; }
@@ -78,15 +86,15 @@
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { createStage } from './src/scene.js';
+    import { createStage, placeKeyLight } from './src/scene.js';
     import { createUmbrella } from './src/umbrella.js';
 
     const canvas = document.getElementById('stage');
-    const { renderer, scene, camera } = createStage(canvas);
+    const { renderer, scene, camera, keyLight } = createStage(canvas);
 
     // 鼠标拖动旋转、滚轮缩放
     const controls = new OrbitControls(camera, canvas);
-    controls.target.set(0, -0.2, 0);
+    controls.target.set(0, 0.1, 0);
     controls.enableDamping = true;   // 旋转带一点惯性，手感更顺
     controls.dampingFactor = 0.08;
 
@@ -97,6 +105,9 @@
       canopyRise: 0.12,
       openAmount: 1.0,
       handleBottom: -1.0,
+      transmission: 0.6,
+      roughness: 0.4,
+      canopyColor: '#e2b86a',
     };
 
     let umbrella = null;
@@ -107,7 +118,7 @@
       scene.add(umbrella);
     }
 
-    // 五个滑块的说明。
+    // 各滑块的说明。
     // 注意：umbrella.js 里没有直接叫“骨长”“中棒长度”的参数，
     // 这里先映射到最接近的参数（详见下方注释）。
     const SLIDERS = [
@@ -135,6 +146,33 @@
       { label: '中棒长度', min: 0.5, max: 1.5, step: 0.01, unit: '',
         value: -params.handleBottom,
         apply: (v) => { params.handleBottom = -v; } },
+
+      // 透光率 → transmission，直接对应
+      { label: '透光率', min: 0, max: 1, step: 0.01, unit: '',
+        value: params.transmission,
+        apply: (v) => { params.transmission = v; } },
+
+      // 粗糙度 → roughness，直接对应
+      { label: '粗糙度', min: 0, max: 1, step: 0.01, unit: '',
+        value: params.roughness,
+        apply: (v) => { params.roughness = v; } },
+
+      // 伞面颜色 → canopyColor（用取色器，不是滑块）
+      { label: '伞面颜色', type: 'color', unit: '',
+        value: params.canopyColor,
+        apply: (v) => { params.canopyColor = v; } },
+
+      // —— 下面两个滑块控制灯光（场景），不重建伞 ——
+
+      // 主光角度 → 主光的仰角（0=水平后方，90=正头顶）
+      { label: '主光角度', min: 0, max: 90, step: 1, unit: '°',
+        value: 30, rebuild: false,
+        apply: (v) => { placeKeyLight(keyLight, v); } },
+
+      // 主光强度 → keyLight.intensity
+      { label: '主光强度', min: 0, max: 5, step: 0.1, unit: '',
+        value: keyLight.intensity, rebuild: false,
+        apply: (v) => { keyLight.intensity = v; } },
     ];
 
     const fields = document.getElementById('fields');
@@ -152,17 +190,28 @@
       label.appendChild(val);
 
       const input = document.createElement('input');
-      input.type = 'range';
-      input.min = s.min;
-      input.max = s.max;
-      input.step = s.step;
-      input.value = s.value;
-      input.addEventListener('input', () => {
-        const v = parseFloat(input.value);
-        val.textContent = v + s.unit;
-        s.apply(v);
-        rebuild();
-      });
+      if (s.type === 'color') {
+        input.type = 'color';
+        input.value = s.value;
+        input.addEventListener('input', () => {
+          const v = input.value;
+          val.textContent = v;
+          s.apply(v);
+          if (s.rebuild !== false) rebuild();
+        });
+      } else {
+        input.type = 'range';
+        input.min = s.min;
+        input.max = s.max;
+        input.step = s.step;
+        input.value = s.value;
+        input.addEventListener('input', () => {
+          const v = parseFloat(input.value);
+          val.textContent = v + s.unit;
+          s.apply(v);
+          if (s.rebuild !== false) rebuild();
+        });
+      }
 
       field.appendChild(label);
       field.appendChild(input);

@@ -43,13 +43,17 @@ const DEFAULTS = {
   // 开合程度：0 = 合拢，1 = 完全张开
   openAmount: 1.0,
 
-  // 纯色材质（本步骤不用贴图、不用透光）
+  // 伞面材质（透光的核心；本步骤先不做贴图）
+  transmission: 0.6,      // 透光率 0-1：越大越透，逆光时能透出光线
+  roughness: 0.4,         // 伞面粗糙度：越小越光滑（油纸略带光泽）
+  canopyColor: '#e2b86a', // 伞面颜色：桐油纸暖黄
+
+  // 其余部件的纯色
   colors: {
     shaft: '#8a6a3c',     // 中棒：木色
     rib: '#a47c3e',       // 伞骨：竹色
     strut: '#a47c3e',     // 撑骨：竹色
     hub: '#6b5230',       // 上/下巢：深竹色
-    canopy: '#e2b86a',    // 伞面：桐油纸暖黄
     handle: '#6b4a26',    // 手柄：深木色
   },
 };
@@ -72,19 +76,31 @@ function cylinderBetween(a, b, radius, material, segments = 8) {
   const up = new THREE.Vector3(0, 1, 0);
   const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction.normalize());
   mesh.setRotationFromQuaternion(quaternion);
+  mesh.castShadow = true; // 伞骨、中棒等不透明部件投出阴影
 
   return mesh;
 }
 
-// 纯色材质（伞面用双面，里外都能看到）
-function makeMaterials(colors) {
+// 材质：伞面用物理材质（支持透光），其余部件用标准材质。
+function makeMaterials(p) {
   return {
-    shaft: new THREE.MeshStandardMaterial({ color: colors.shaft }),
-    rib: new THREE.MeshStandardMaterial({ color: colors.rib }),
-    strut: new THREE.MeshStandardMaterial({ color: colors.strut }),
-    hub: new THREE.MeshStandardMaterial({ color: colors.hub }),
-    canopy: new THREE.MeshStandardMaterial({ color: colors.canopy, side: THREE.DoubleSide }),
-    handle: new THREE.MeshStandardMaterial({ color: colors.handle }),
+    shaft: new THREE.MeshStandardMaterial({ color: p.colors.shaft }),
+    rib: new THREE.MeshStandardMaterial({ color: p.colors.rib }),
+    strut: new THREE.MeshStandardMaterial({ color: p.colors.strut }),
+    hub: new THREE.MeshStandardMaterial({ color: p.colors.hub }),
+    // 伞面：MeshPhysicalMaterial，transmission 让逆光能透过来。
+    // DoubleSide 双面渲染，里外都能看到。
+    canopy: new THREE.MeshPhysicalMaterial({
+      color: p.canopyColor,
+      roughness: p.roughness,
+      transmission: p.transmission,
+      thickness: 0.2, // 纸的厚度：给透射一点折射深度
+      ior: 1.3,       // 折射率：油纸约 1.3（玻璃是 1.5）
+      side: THREE.DoubleSide,
+      // 不用 transparent：transparent 是“透明度/alpha”，
+      // transmission 是“透光”，两者机制不同，不要混用。
+    }),
+    handle: new THREE.MeshStandardMaterial({ color: p.colors.handle }),
   };
 }
 
@@ -210,7 +226,9 @@ function buildCanopy(p, geo, state, material) {
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
-  return new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.receiveShadow = true; // 伞面接收阴影
+  return mesh;
 }
 
 // 手柄：中棒底端，比中棒粗（不随开合变化）
@@ -228,7 +246,7 @@ export function createUmbrella(params = {}) {
     colors: { ...DEFAULTS.colors, ...(params.colors || {}) },
   };
   const group = new THREE.Group();
-  const materials = makeMaterials(p.colors);
+  const materials = makeMaterials(p);
 
   const geo = linkageGeometry(p);
   const state = openState(p, geo, p.openAmount);
