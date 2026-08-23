@@ -22,8 +22,12 @@
       "origin": "",
       "geometry": {
         "ribCount": 24,
-        "ribLength": 60,
+        "radius": 1.0,
+        "apexHeight": 0.55,
         "canopyRise": 0,
+        "ribRadius": 0.013,
+        "strutRadius": 0.010,
+        "ribLength": 60,
         "openAmount": 1,
         "shaftLength": 95
       },
@@ -136,8 +140,12 @@
       "origin": "浙江省杭州市余杭区瓶窑镇（塘埠村、西坞村一带）",
       "geometry": {
         "ribCount": 36,
-        "ribLength": 51,
+        "radius": 1.0,
+        "apexHeight": 0.55,
         "canopyRise": 0,
+        "ribRadius": 0.013,
+        "strutRadius": 0.010,
+        "ribLength": 51,
         "openAmount": 1,
         "shaftLength": 66
       },
@@ -242,6 +250,174 @@
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         }
       ]
+    },
+    {
+      "id": "huizhou-mosan",
+      "name": "徽州墨伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 28,
+        "radius": 0.95,
+        "apexHeight": 0.50,
+        "canopyRise": 0.10,
+        "ribRadius": 0.013,
+        "strutRadius": 0.010,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "plum-ink.png",
+        "canopyColor": "#8a8478",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#4a4238"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
+    },
+    {
+      "id": "foqian-gongsan",
+      "name": "佛前供伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 32,
+        "radius": 1.0,
+        "apexHeight": 0.52,
+        "canopyRise": 0.08,
+        "ribRadius": 0.013,
+        "strutRadius": 0.010,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "lotus-scroll.png",
+        "canopyColor": "#e6c07a",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#765c14"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
+    },
+    {
+      "id": "guanli-yongsan",
+      "name": "官礼用伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 16,
+        "radius": 1.12,
+        "apexHeight": 0.60,
+        "canopyRise": 0.15,
+        "ribRadius": 0.022,
+        "strutRadius": 0.016,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "crane-cloud.png",
+        "canopyColor": "#c9a06a",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#6b4a26"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
+    },
+    {
+      "id": "hunsu-xisan",
+      "name": "婚俗喜伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 24,
+        "radius": 1.0,
+        "apexHeight": 0.55,
+        "canopyRise": 0.12,
+        "ribRadius": 0.014,
+        "strutRadius": 0.011,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "bat-fortune.png",
+        "canopyColor": "#c23b2e",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#8a4438"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
+    },
+    {
+      "id": "wenren-xiaosan",
+      "name": "文人小伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 20,
+        "radius": 0.70,
+        "apexHeight": 0.50,
+        "canopyRise": 0.10,
+        "ribRadius": 0.010,
+        "strutRadius": 0.008,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "rain-bamboo.png",
+        "canopyColor": "#e2b86a",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#8a7440"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
+    },
+    {
+      "id": "tingyuan-dasan",
+      "name": "庭院大伞",
+      "alias": "",
+      "origin": "",
+      "geometry": {
+        "ribCount": 36,
+        "radius": 1.30,
+        "apexHeight": 0.62,
+        "canopyRise": 0.22,
+        "ribRadius": 0.024,
+        "strutRadius": 0.018,
+        "openAmount": 1
+      },
+      "material": {
+        "canopyTexture": "cloud-thunder.png",
+        "canopyColor": "#d9a95e",
+        "transmission": 0.85,
+        "roughness": 0.5,
+        "ribColor": "#5f4a1e"
+      },
+      "light": {
+        "azimuth": 195,
+        "intensity": 2.6
+      },
+      "culture": {},
+      "craftSteps": []
     }
   ]
 }

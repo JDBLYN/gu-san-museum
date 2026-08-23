@@ -141,7 +141,11 @@ function buildUmbrella() {
   return createUmbrella({
     // 这些参数都能直接从数据文件里读到
     ribCount: currentItem.geometry.ribCount,
-    canopyRise: currentItem.geometry.canopyRise,
+    radius: currentItem.geometry.radius,          // 伞面半径（大小）
+    apexHeight: currentItem.geometry.apexHeight,  // 伞顶高度（高矮比例）
+    canopyRise: currentItem.geometry.canopyRise,  // 伞面弧垂
+    ribRadius: currentItem.geometry.ribRadius,    // 伞骨粗细
+    strutRadius: currentItem.geometry.strutRadius, // 撑骨粗细
     openAmount: openAmount,
     canopyColor: currentItem.material.canopyColor,
     transmission: currentItem.material.transmission,
