@@ -33,7 +33,7 @@ export function createStage(canvas) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 柔和阴影
   renderer.toneMapping = THREE.ACESFilmicToneMapping; // 颜色更自然
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.2;
 
   // 场景（不设 background，保持透明）
   const scene = new THREE.Scene();
@@ -49,7 +49,7 @@ export function createStage(canvas) {
   scene.add(keyLight.target); // 主光的目标（伞中心）也要加入场景，影子才对
 
   // 环境光：很弱，只让暗部不至于全黑（这样伞骨才能显成深色剪影）
-  scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
 
   scene.add(buildBackdrop()); // 逆光光晕：让透光有“亮”可透
 
