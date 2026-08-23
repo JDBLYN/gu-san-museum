@@ -103,6 +103,20 @@ document.getElementById('open-slider').addEventListener('input', (e) => {
   rebuild();
 });
 
+// 设置面板：手机端可收起成一个小图标（点图标展开 / 收起）
+const controlsToggle = document.getElementById('controls-toggle');
+const controlsPanel = document.getElementById('controls');
+function syncControlsIcon() {
+  const collapsed = controlsPanel.classList.contains('collapsed');
+  controlsToggle.textContent = collapsed ? '⚙' : '×';
+  controlsToggle.title = collapsed ? '展开设置' : '收起设置';
+}
+controlsToggle.addEventListener('click', () => {
+  controlsPanel.classList.toggle('collapsed');
+  syncControlsIcon();
+});
+syncControlsIcon();
+
 // 选中一把伞：高亮目录项 + 让两个控制同步 + 造伞
 function selectUmbrella(id) {
   document.querySelectorAll('#catalog button').forEach((b) => {

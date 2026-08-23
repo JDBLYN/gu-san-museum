@@ -147,6 +147,20 @@
       min-width: 190px;
     }
 
+    /* 设置面板的收起按钮：桌面端不显示，手机端才出现（收起后就是一个图标） */
+    #controls-toggle {
+      display: none;
+      align-self: flex-end;
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    #controls-toggle:hover { color: var(--text); }
+
     #controls label {
       display: flex;
       flex-direction: column;
@@ -298,15 +312,9 @@
         grid-template-rows: auto auto;
       }
 
-      /* 目录：从左侧竖排，改成顶部一条可横向滚动的条 */
+      /* 目录：手机端整块去掉（只有一把伞，没必要占地方） */
       #catalog {
-        border-right: none;
-        border-bottom: var(--border-w) solid var(--line);
-        padding: 8px 12px;
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
-        gap: var(--gap-compact);
+        display: none;
       }
       #catalog button {
         flex: 0 0 auto;             /* 每项按自己宽度排，不拉伸 */
@@ -318,10 +326,9 @@
         border-bottom-color: var(--accent);
       }
 
-      /* 3D 区：给一个明确高度，让伞在首屏看得见 */
+      /* 3D 区：固定占屏幕 50% */
       #stage-wrap {
-        height: 56vh;
-        min-height: 320px;
+        height: 50vh;
       }
 
       /* 控制条：钉在 3D 区底部，往角落收一点 */
@@ -332,6 +339,10 @@
         padding: 12px 14px;
         gap: 10px;
       }
+      /* 手机端：显示收起按钮；收起后只剩一个图标 */
+      #controls-toggle { display: block; }
+      #controls.collapsed label { display: none; }
+      #controls.collapsed { gap: 0; padding: 8px; min-width: 0; }
 
       /* 解说：不锁 360px，改成内容自然高度，随页面往下滚 */
       footer {
@@ -355,6 +366,7 @@
       <div id="stage-bg"></div>
       <canvas id="stage"></canvas>
       <div id="controls">
+        <button id="controls-toggle" type="button" title="收起设置">×</button>
         <label>
           <span>开合</span>
           <input type="range" id="open-slider" min="0" max="1" step="0.01" value="1" />
