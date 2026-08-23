@@ -26,9 +26,12 @@
 
       /* —— 两块信息面板共用的一套（左目录 + 下解说，看起来是一家）—— */
       --font: "Noto Serif SC", "Songti SC", "SimSun", serif;
-      --fs-body: 14px;   /* 正文一级。以后「调大一号字」只改这一个 */
-      --fs-title: calc(var(--fs-body) + 2px); /* 名字/标题一级，始终比正文大 2px */
-      --lh: 1.7;         /* 行距 */
+      --fs-body: 15px;   /* 正文。以后「调大一号字」只改这一个 */
+      --fs-title: calc(var(--fs-body) + 3px); /* 标题（18px），比正文大 3px */
+      --fs-note: calc(var(--fs-body) - 3px);  /* 标注（12px），比正文小 3px */
+      --lh-title: 28px;  /* 标题行距（4 的倍数） */
+      --lh-body: 24px;   /* 正文行距（4 的倍数） */
+      --lh-note: 20px;   /* 标注行距（4 的倍数） */
       --radius: 6px;     /* 圆角 */
       --border-w: 1px;   /* 边框粗细 */
       --indicator-w: 2px; /* 选中态指示条粗细 */
@@ -36,7 +39,9 @@
       /* —— 密度：目录紧凑扫读，解说宽松细读，只差间距 —— */
       --gap-compact: 6px;       /* 目录项之间的间距 */
       --pad-compact: 10px 14px; /* 目录按钮的内边距 */
-      --gap-relaxed: 18px;      /* 解说条目之间的间距 */
+      --gap-relaxed: 20px;      /* 解说条目之间的间距（4 的倍数） */
+      --gap-title: 8px;         /* 标题到正文的间距（4 的倍数） */
+      --gap-note: 8px;          /* 正文到标注的间距（4 的倍数） */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -212,14 +217,15 @@
     .fact { margin-bottom: var(--gap-relaxed); }
     .fact h3 {
       font-size: var(--fs-title);
+      line-height: var(--lh-title);
       color: var(--accent);
       font-weight: 500;
       letter-spacing: 0.2em;
-      margin-bottom: 6px;
+      margin-bottom: var(--gap-title);
     }
     .fact p {
       font-size: var(--fs-body);
-      line-height: var(--lh);
+      line-height: var(--lh-body);
       max-width: 720px;
     }
 
@@ -246,14 +252,30 @@
     }
     .craft-step h3 {
       font-size: var(--fs-title);
+      line-height: var(--lh-title);
       color: var(--accent);
       font-weight: 500;
       letter-spacing: 0.2em;
     }
     .craft-step p {
       font-size: var(--fs-body);
-      line-height: var(--lh);
+      line-height: var(--lh-body);
     }
+
+    /* 标注：来源·分级小字，最小的第三级 */
+    .note {
+      font-size: var(--fs-note);
+      line-height: var(--lh-note);
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-top: var(--gap-note);
+    }
+    .note a {
+      color: var(--muted);
+      text-decoration: underline;
+    }
+    .note a:hover { color: var(--text); }
+    .craft-step .note { margin-top: 0; } /* 卡片内部靠 flex 的 8px 间距，不再叠加 */
 
     /* ============ 移动端：改成上下布局（桌面端样式一律不动）============ */
     @media (max-width: 768px) {

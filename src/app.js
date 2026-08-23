@@ -180,8 +180,37 @@ function renderFacts(panelId, culture, keys) {
 
     box.appendChild(title);
     box.appendChild(text);
+    renderNote(box, field); // 标注：分级 · 来源
     panel.appendChild(box);
   });
+}
+
+// 标注：每条说明/步骤下方的小字「分级 · 来源」，数据里没填就不显示
+function renderNote(container, field) {
+  const hasLevel = field.level && field.level.trim();
+  const hasSource = field._source;
+  if (!hasLevel && !hasSource) return;
+
+  const note = document.createElement('div');
+  note.className = 'note';
+
+  if (hasLevel) {
+    const lv = document.createElement('span');
+    lv.textContent = field.level; // 分级：史实 / 推断 / 传说
+    note.appendChild(lv);
+  }
+  if (hasLevel && hasSource) {
+    note.appendChild(document.createTextNode(' · '));
+  }
+  if (hasSource) {
+    const link = document.createElement('a');
+    link.href = field._source; // 来源链接
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = '来源';
+    note.appendChild(link);
+  }
+  container.appendChild(note);
 }
 
 // 工艺：8 个步骤按顺序排成一行，每步配一张插画
@@ -209,6 +238,7 @@ function renderCraft(panelId, steps) {
     card.appendChild(img);
     card.appendChild(name);
     card.appendChild(desc);
+    renderNote(card, step); // 标注：分级 · 来源
     row.appendChild(card);
   });
 
