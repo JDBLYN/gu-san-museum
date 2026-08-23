@@ -276,7 +276,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "「徽州墨伞」为按风格归类的伞名，取徽州水墨、徽墨的素雅意象，伞面以墨色为基调。作为独立伞种，其名称与形制暂无权威记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "暂无明确的典型尺寸记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "皖南油布伞传统以老毛竹为骨、天然桐油涂布面（泾县孤峰油布伞，安徽省省级非遗）；「徽州墨伞」的具体用材尚待核实。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "伞面以水墨绘饰，配「梅花·墨」纹样，取梅花之清雅。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "墨色、水墨纹样取文雅清寂之意；具体寓意暂无权威记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        }
+      },
       "craftSteps": []
     },
     {
@@ -304,7 +335,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "宝伞（华盖）为佛教「八吉祥」之一，形如伞盖、置于佛顶遮蔽风日，象征尊贵威势；佛前供伞多取此端庄之形。",
+          "level": "史实",
+          "_source": "http://media.tibet.cn/09zcfj/xwdt/201306/t20130628_1903227.htm"
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "佛前供伞尺寸依供奉场合而定，暂无统一记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "佛教宝盖（华盖）多以绸缎、金柄、宝珠等制成，非纸伞；佛前供油纸伞的具体用材待核实。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "供伞伞面常见莲花、卷草等佛教连续纹样，取庄严清静之意（配「莲花·卷草」纹）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "宝伞为佛教八吉祥之一，寓意遮蔽魔障、护佑众生、清净吉祥。",
+          "level": "史实",
+          "_source": "https://www.dpm.org.cn/lemmas/239972.html"
+        }
+      },
       "craftSteps": []
     },
     {
@@ -332,7 +394,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "官礼、仪仗所用伞称「华盖」（亦名罗伞、凉伞），伞盖的用料、色彩、尺寸用以区分官品尊卑。",
+          "level": "史实",
+          "_source": "https://www.qinfeng.gov.cn/info/1064/186069.htm"
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "伞盖尺寸依品级而别，详见历代《舆服志》；暂无统一数字。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "仪仗华盖多以丝绸、锦缎配伞骨制成，黄色为皇权象征；官礼油纸伞的具体用材待核实。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "官礼伞面常见云鹤、龙凤等祥瑞纹样，取尊贵气派之意（配「仙鹤·云」纹）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "华盖为皇权威仪象征，寓意荫庇天下、尊贵威势。",
+          "level": "史实",
+          "_source": "https://www.qinfeng.gov.cn/info/1064/186069.htm"
+        }
+      },
       "craftSteps": []
     },
     {
@@ -360,7 +453,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "婚嫁用大红油纸伞，伞形圆满；红伞常代替红盖头，由长辈或伴娘撑伞护送新娘出门。【待核实】",
+          "level": "传说",
+          "_source": null
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "婚俗红伞多为日常手持大小，暂无统一尺寸记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "传统婚嫁陪嫁多用桐油油纸伞，以竹骨、皮纸为面、外涂桐油；今多以布伞代之。【待核实】",
+          "level": "传说",
+          "_source": null
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "婚伞伞面常绘团花、蝙蝠（福）、喜字等吉祥纹样，以大红色为主调（配「蝙蝠·福」纹）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "红伞寓意婚姻圆满、早生贵子（「油纸」谐音「有子」、伞形为圆）；民间另传「开枝散叶」「遮天避邪」、忌送新人伞（「伞」「散」谐音）等说法。【待核实】",
+          "level": "传说",
+          "_source": null
+        }
+      },
       "craftSteps": []
     },
     {
@@ -388,7 +512,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "文人小伞以小巧清瘦为尚，为江南文人所持，与烟雨江南的文人意象相联。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "文人小伞以小巧著称，暂无统一尺寸记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "以竹骨、手工皮纸为面、外涂桐油（同一般油纸伞）。",
+          "level": "史实",
+          "_source": "http://xinhuanet.com.cn/culture/20250217/1dce2fd1d61745a185fc6c38e5e0ace9/c.html"
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "文人伞面常见梅兰竹菊、山水、竹等清雅题材（配「雨竹」纹）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "油纸伞是江南文人的诗意象征，「撑着油纸伞」因戴望舒《雨巷》而成经典意象。",
+          "level": "史实",
+          "_source": "https://www.chinawriter.com.cn/2013/2013-07-30/169081.html"
+        }
+      },
       "craftSteps": []
     },
     {
@@ -416,7 +571,38 @@
         "azimuth": 195,
         "intensity": 2.6
       },
-      "culture": {},
+      "culture": {
+        "shape": {
+          "name": "形制特征",
+          "text": "庭院大伞为大型油纸伞，用于庭院、园林遮阳布景，伞面阔大、弧垂较深；作为独立形制暂无权威记载。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "size": {
+          "name": "典型尺寸",
+          "text": "现代市售庭院油纸伞直径可达 150—300 厘米；传统形制暂无权威尺寸。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "materials": {
+          "name": "主要用材",
+          "text": "以竹骨、桐油纸面制成，桐油使伞面防水耐晒（同一般油纸伞）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternTheme": {
+          "name": "纹样主题",
+          "text": "庭院大伞伞面常见云雷、几何等庄重纹样（配「云雷」纹）。【待核实】",
+          "level": "推断",
+          "_source": null
+        },
+        "patternMeaning": {
+          "name": "纹样寓意",
+          "text": "云雷纹为古代青铜器、织物上的传统纹样，寓意连绵不绝、庄重；用于伞面的具体寓意待核实。【待核实】",
+          "level": "推断",
+          "_source": null
+        }
+      },
       "craftSteps": []
     }
   ]
