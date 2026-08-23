@@ -56,6 +56,12 @@ const DEFAULTS = {
     hub: '#6b5230',       // 上/下巢：深竹色
     handle: '#6b4a26',    // 手柄：深木色
   },
+
+  // 贴图（Texture 对象，由外面加载好传进来；null 表示用纯色）
+  textures: {
+    rib: null,    // 伞骨：竹纹理
+    handle: null, // 手柄：木纹理
+  },
 };
 
 // 小工具：线性插值
@@ -85,7 +91,7 @@ function cylinderBetween(a, b, radius, material, segments = 8) {
 function makeMaterials(p) {
   return {
     shaft: new THREE.MeshStandardMaterial({ color: p.colors.shaft }),
-    rib: new THREE.MeshStandardMaterial({ color: p.colors.rib }),
+    rib: new THREE.MeshStandardMaterial({ color: p.colors.rib, map: p.textures.rib }),
     strut: new THREE.MeshStandardMaterial({ color: p.colors.strut }),
     hub: new THREE.MeshStandardMaterial({ color: p.colors.hub }),
     // 伞面：MeshPhysicalMaterial，transmission 让逆光能透过来。
@@ -100,7 +106,7 @@ function makeMaterials(p) {
       // 不用 transparent：transparent 是“透明度/alpha”，
       // transmission 是“透光”，两者机制不同，不要混用。
     }),
-    handle: new THREE.MeshStandardMaterial({ color: p.colors.handle }),
+    handle: new THREE.MeshStandardMaterial({ color: p.colors.handle, map: p.textures.handle }),
   };
 }
 
@@ -244,6 +250,7 @@ export function createUmbrella(params = {}) {
     ...DEFAULTS,
     ...params,
     colors: { ...DEFAULTS.colors, ...(params.colors || {}) },
+    textures: { ...DEFAULTS.textures, ...(params.textures || {}) },
   };
   const group = new THREE.Group();
   const materials = makeMaterials(p);

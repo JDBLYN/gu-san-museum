@@ -108,13 +108,25 @@
       transmission: 0.6,
       roughness: 0.4,
       canopyColor: '#e2b86a',
+      // 伞骨/手柄颜色设为白色中性色，让竹纹、木纹原样显示
+      colors: { rib: '#ffffff', handle: '#ffffff' },
     };
+
+    // 加载伞骨（竹）和手柄（木）两张贴图，只加载一次，之后每次重建都复用
+    const textureLoader = new THREE.TextureLoader();
+    const ribTexture = textureLoader.load('assets/textures/bamboo-rib.png');
+    const handleTexture = textureLoader.load('assets/textures/wood-handle.png');
+    ribTexture.colorSpace = THREE.SRGBColorSpace;   // 颜色按 sRGB 处理，颜色才准
+    handleTexture.colorSpace = THREE.SRGBColorSpace;
 
     let umbrella = null;
 
     function rebuild() {
       if (umbrella) scene.remove(umbrella);
-      umbrella = createUmbrella(params);
+      umbrella = createUmbrella({
+        ...params,
+        textures: { rib: ribTexture, handle: handleTexture },
+      });
       scene.add(umbrella);
     }
 
@@ -161,6 +173,11 @@
       { label: '伞面颜色', type: 'color', unit: '',
         value: params.canopyColor,
         apply: (v) => { params.canopyColor = v; } },
+
+      // 伞骨颜色 → colors.rib（给竹纹理染色）
+      { label: '伞骨颜色', type: 'color', unit: '',
+        value: params.colors.rib,
+        apply: (v) => { params.colors.rib = v; } },
 
       // —— 下面两个滑块控制灯光（场景），不重建伞 ——
 
