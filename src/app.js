@@ -61,6 +61,7 @@ async function start() {
   data = await response.json();
   buildCatalog(data.umbrellas);
   buildPatternOptions();
+  setupTabs();
   await selectUmbrella(data.umbrellas[0].id);
 }
 
@@ -114,6 +115,7 @@ function selectUmbrella(id) {
   document.getElementById('pattern-select').value = currentPattern || '';
 
   rebuild();
+  renderCulture(currentItem);
 }
 
 // 造伞：把当前参数交给 umbrella.js 生成一把新伞
@@ -133,6 +135,84 @@ function rebuild() {
     canopyTexture: currentPattern ? patternTextures[currentPattern] : null,
   });
   scene.add(umbrella);
+}
+
+// —— 下方文化解说：三个标签页的内容都从数据里读 ——
+
+// 三个标签页的切换
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// 选中伞后，把它的文化内容填进三个标签页
+function renderCulture(item) {
+  // 「形制」页：形制特征、典型尺寸、主要用材
+  renderFacts('panel-form', item.culture, ['shape', 'size', 'materials']);
+  // 「纹样」页：纹样主题、纹样寓意
+  renderFacts('panel-pattern', item.culture, ['patternTheme', 'patternMeaning']);
+  // 「工艺」页：8 个步骤
+  renderCraft('panel-craft', item.craftSteps);
+}
+
+// 形制、纹样：按字段顺序渲染，没填文字的字段跳过不显示
+function renderFacts(panelId, culture, keys) {
+  const panel = document.getElementById(panelId);
+  panel.innerHTML = '';
+  keys.forEach((key) => {
+    const field = culture[key];
+    if (!field || !field.text) return; // 空字段不显示
+    const box = document.createElement('div');
+    box.className = 'fact';
+
+    const title = document.createElement('h3');
+    title.textContent = field.name; // 栏目名来自数据
+
+    const text = document.createElement('p');
+    text.textContent = field.text;  // 正文来自数据
+
+    box.appendChild(title);
+    box.appendChild(text);
+    panel.appendChild(box);
+  });
+}
+
+// 工艺：8 个步骤按顺序排成一行，每步配一张插画
+function renderCraft(panelId, steps) {
+  const panel = document.getElementById(panelId);
+  panel.innerHTML = '';
+
+  const row = document.createElement('div');
+  row.className = 'craft-steps';
+
+  steps.forEach((step) => {
+    const card = document.createElement('div');
+    card.className = 'craft-step';
+
+    const img = document.createElement('img');
+    img.src = step.image; // 插画路径来自数据
+    img.alt = step.name;
+
+    const name = document.createElement('h3');
+    name.textContent = step.name; // 步骤名来自数据
+
+    const desc = document.createElement('p');
+    desc.textContent = step.desc; // 步骤说明来自数据
+
+    card.appendChild(img);
+    card.appendChild(name);
+    card.appendChild(desc);
+    row.appendChild(card);
+  });
+
+  panel.appendChild(row);
 }
 
 // —— 动画循环：伞缓慢自转，每一帧画一次 ——

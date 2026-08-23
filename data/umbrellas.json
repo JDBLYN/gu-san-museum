@@ -25,26 +25,31 @@
       },
       "culture": {
         "shape": {
+          "name": "形制特征",
           "text": "以楠竹为骨、手工皮纸为面、外涂桐油，可开合，伞身轻便美观。",
           "level": "史实",
           "_source": "http://xinhuanet.com.cn/culture/20250217/1dce2fd1d61745a185fc6c38e5e0ace9/c.html"
         },
         "size": {
+          "name": "典型尺寸",
           "text": "常见成品伞面直径约 84 厘米或 100 厘米。",
           "level": "史实",
           "_source": "http://www.wenlvw.cn/index.php?m=content&c=index&a=show&catid=9&id=4024"
         },
         "materials": {
+          "name": "主要用材",
           "text": "以泸州本地盛产的桐油、楠竹、皮纸等为主要原料。",
           "level": "史实",
           "_source": "http://xinhuanet.com.cn/culture/20250217/1dce2fd1d61745a185fc6c38e5e0ace9/c.html"
         },
         "patternTheme": {
+          "name": "纹样主题",
           "text": "伞面以传统石印工艺印制诗画纹样，诗画兼备。",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         "patternMeaning": {
+          "name": "纹样寓意",
           "text": "",
           "level": "",
           "_source": null
