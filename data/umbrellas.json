@@ -1,0 +1,33 @@
+{
+  "umbrellas": [
+    {
+      "id": "peony-crimson",
+      "name": "红牡丹油纸伞",
+      "textures": {
+        "pattern": "assets/patterns/peony-crimson.png",
+        "handle": "assets/textures/wood-handle.png"
+      },
+      "geometry": {
+        "canopyRadius": 1.0,
+        "canopyHeight": 0.45,
+        "ribCount": 30,
+        "ribRadius": 0.012,
+        "handleLength": 1.7,
+        "handleRadius": 0.035
+      },
+      "materials": {
+        "canopy": { "color": "#f2e2c0", "roughness": 0.6, "transmission": 0.6, "thickness": 0.25 },
+        "rib": { "color": "#5a4326", "roughness": 0.6 },
+        "handle": { "color": "#8a5a2b", "roughness": 0.55 }
+      },
+      "culture": {
+        "parts": [
+          { "name": "伞面", "text": "【待核实】" },
+          { "name": "伞骨", "text": "【待核实】" },
+          { "name": "伞柄", "text": "【待核实】" }
+        ],
+        "why": "【待核实】"
+      }
+    }
+  ]
+}

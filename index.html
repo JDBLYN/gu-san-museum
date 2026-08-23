@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>古伞文化馆</title>
+
+  <!-- 用 importmap 引入 Three.js，版本锁定 0.169.0，不装任何包 -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg: #171a21;     /* 深墨青灰：安静背景 */
+      --panel: #1e232c;  /* 面板 */
+      --line: #2b313d;   /* 分隔线 */
+      --text: #e7e2d6;   /* 暖白文字 */
+      --muted: #8f97a3;  /* 次要文字 */
+      --accent: #c23b2e; /* 朱砂红：唯一强调色 */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+    }
+
+    /* 顶部：只放馆名 */
+    header {
+      padding: 18px 28px;
+      font-size: 20px;
+      letter-spacing: 0.35em;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* 中间：左目录 + 3D 展台 */
+    main {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 0;
+    }
+
+    #catalog {
+      border-right: 1px solid var(--line);
+      padding: 24px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #catalog button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      text-align: left;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 10px 14px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+    }
+
+    #catalog button:hover { color: var(--text); }
+    #catalog button.active {
+      color: var(--accent);
+      border-left: 2px solid var(--accent);
+    }
+
+    #stage-wrap {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    #stage {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    #stage:active { cursor: grabbing; }
+
+    /* 底部：文化解说 */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 18px 28px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      margin-bottom: 10px;
+    }
+
+    #parts { display: flex; gap: 32px; }
+
+    .part h3 {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    .part p {
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 320px;
+    }
+
+    #why {
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 560px;
+    }
+  </style>
+</head>
+<body>
+  <header>古伞文化馆</header>
+
+  <main>
+    <aside id="catalog"></aside>
+    <section id="stage-wrap">
+      <canvas id="stage"></canvas>
+    </section>
+  </main>
+
+  <footer id="culture">
+    <section>
+      <h2 class="label">它由什么构成</h2>
+      <div id="parts"></div>
+    </section>
+    <section>
+      <h2 class="label">它为什么好看</h2>
+      <p id="why"></p>
+    </section>
+  </footer>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
