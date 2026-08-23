@@ -9,7 +9,8 @@
   <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.169.0/build/three.module.js"
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
       }
     }
   </script>
@@ -33,7 +34,7 @@
       color: var(--text);
       font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: auto 1fr;
       height: 100vh;
     }
 
@@ -52,6 +53,7 @@
       min-height: 0;
     }
 
+    /* 左侧：伞目录（内容由 app.js 从数据文件生成） */
     #catalog {
       border-right: 1px solid var(--line);
       padding: 24px 16px;
@@ -79,6 +81,7 @@
       border-left: 2px solid var(--accent);
     }
 
+    /* 中间：3D 展台（伞画在这个 canvas 上） */
     #stage-wrap {
       position: relative;
       min-width: 0;
@@ -95,44 +98,41 @@
     }
     #stage:active { cursor: grabbing; }
 
-    /* 底部：文化解说 */
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 18px 28px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 28px;
-      align-items: start;
+    /* 右下角：两个控制（开合、纹样） */
+    #controls {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(30, 35, 44, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      min-width: 190px;
     }
 
-    .label {
+    #controls label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       font-size: 13px;
       color: var(--muted);
-      font-weight: 400;
-      letter-spacing: 0.25em;
-      margin-bottom: 10px;
+      letter-spacing: 0.15em;
     }
 
-    #parts { display: flex; gap: 32px; }
+    #controls input[type="range"] { width: 100%; }
 
-    .part h3 {
-      font-size: 14px;
-      color: var(--accent);
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      margin-bottom: 6px;
-    }
-
-    .part p {
-      font-size: 14px;
-      line-height: 1.7;
-      max-width: 320px;
-    }
-
-    #why {
-      font-size: 15px;
-      line-height: 1.8;
-      max-width: 560px;
+    #controls select {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-family: inherit;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -140,22 +140,24 @@
   <header>古伞文化馆</header>
 
   <main>
+    <!-- 左侧伞目录：由 app.js 循环渲染，不在这里写任何伞名 -->
     <aside id="catalog"></aside>
+
+    <!-- 中间 3D 展台 + 右下角控制 -->
     <section id="stage-wrap">
       <canvas id="stage"></canvas>
+      <div id="controls">
+        <label>
+          <span>开合</span>
+          <input type="range" id="open-slider" min="0" max="1" step="0.01" value="1" />
+        </label>
+        <label>
+          <span>纹样</span>
+          <select id="pattern-select"></select>
+        </label>
+      </div>
     </section>
   </main>
-
-  <footer id="culture">
-    <section>
-      <h2 class="label">它由什么构成</h2>
-      <div id="parts"></div>
-    </section>
-    <section>
-      <h2 class="label">它为什么好看</h2>
-      <p id="why"></p>
-    </section>
-  </footer>
 
   <script type="module" src="src/app.js"></script>
 </body>
