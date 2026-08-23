@@ -1,14 +1,11 @@
-// 场景：相机、灯光、地面。伞本体在 umbrella.js 里。
-// 本文件只管“舞台”——伞放进来之后看到的背景、光线、影子。
+// 场景：相机、灯光、背景。伞本体在 umbrella.js 里。
+// 本文件只管“舞台”——伞放进来之后看到的背景、光线。
 //
 // 本项目的视觉核心：
 //   主光放在伞的斜后上方做逆光，相机在斜前下方抬头看伞，
 //   光线从伞面背后透过来，伞骨在伞面上投出清晰剪影。
 
 import * as THREE from 'three';
-
-// 中性灰背景（干净、不抢伞的颜色）
-const BACKGROUND = 0x909090;
 
 // 主光的固定参数
 const KEY_DISTANCE = 4;        // 主光离伞中心的距离（固定，只改角度）
@@ -29,17 +26,17 @@ export function placeKeyLight(light, angleDeg) {
 
 // 对外唯一入口：搭好舞台，返回渲染器、场景、相机、主光。
 export function createStage(canvas) {
-  // 渲染器（把 3D 画到 canvas 上）
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  // 渲染器：透明背景，让 CSS 里压暗虚化的 hall-bg 从后面透出来
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0); // 全透明，不遮背景
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 柔和阴影
   renderer.toneMapping = THREE.ACESFilmicToneMapping; // 颜色更自然
   renderer.toneMappingExposure = 1.1;
 
-  // 场景
+  // 场景（不设 background，保持透明）
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(BACKGROUND);
 
   // 相机：站在伞的斜前下方，抬头看伞
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
@@ -54,8 +51,7 @@ export function createStage(canvas) {
   // 环境光：很弱，只让暗部不至于全黑（这样伞骨才能显成深色剪影）
   scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
-  scene.add(buildBackdrop()); // 逆光板：让透光有“亮”可透
-  scene.add(buildFloor());
+  scene.add(buildBackdrop()); // 逆光光晕：让透光有“亮”可透
 
   return { renderer, scene, camera, keyLight };
 }
@@ -81,25 +77,37 @@ function buildKeyLight() {
   return light;
 }
 
-// 逆光板：一块自己发光的暖色板，放在伞后方。
-// 这是“透光剪影”的关键：transmission 要透出“亮”的东西才看得见——
-// 纯灰背景是暗的，透不出光，剪影就出不来。
-// 有了这块亮板，伞面才能透出暖光、显出伞骨的深色剪影。
+// 逆光光晕：一张“中心暖亮、边缘透明”的圆斑，放在伞后方。
+// 这是“透光剪影”的关键：伞面的 transmission 要透出“亮”的东西才看得见——
+// 暗背景透不出光，剪影就出不来。有了这团暖光，伞面才能透出暖光、
+// 伞骨才能显出深色剪影。
 function buildBackdrop() {
-  const geometry = new THREE.PlaneGeometry(4.5, 4.5);
-  const material = new THREE.MeshBasicMaterial({ color: 0xfff0d8, side: THREE.DoubleSide });
+  const geometry = new THREE.PlaneGeometry(4, 4);
+  const material = new THREE.MeshBasicMaterial({
+    map: makeGlowTexture(),
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
   const panel = new THREE.Mesh(geometry, material);
   panel.position.set(0, 0.3, -2.5); // 伞后方，正对相机
   return panel;
 }
 
-// 地面：一块承接阴影的灰色平面
-function buildFloor() {
-  const geometry = new THREE.PlaneGeometry(10, 10);
-  const material = new THREE.MeshStandardMaterial({ color: 0xb0b0b0, roughness: 0.95 });
-  const floor = new THREE.Mesh(geometry, material);
-  floor.rotation.x = -Math.PI / 2; // 放平
-  floor.position.y = -1.8;          // 在伞下方当“展台”
-  floor.receiveShadow = true;        // 接住阴影
-  return floor;
+// 生成“中心亮、边缘透明”的暖色圆斑贴图（用代码画的光照效果，不是内容图）
+function makeGlowTexture() {
+  const size = 256;
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  g.addColorStop(0, 'rgba(255, 242, 214, 1)');
+  g.addColorStop(0.5, 'rgba(255, 236, 200, 0.55)');
+  g.addColorStop(1, 'rgba(255, 230, 190, 0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
 }

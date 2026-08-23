@@ -88,7 +88,20 @@
       min-height: 0;
     }
 
+    /* 背景层：hall-bg 压暗 + 虚化，垫在 3D 下面，绝不抢伞 */
+    #stage-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url('assets/misc/hall-bg.png');
+      background-size: cover;
+      background-position: center;
+      filter: blur(10px) brightness(0.4);
+    }
+
     #stage {
+      position: relative;
+      z-index: 1;
       display: block;
       width: 100%;
       height: 100%;
@@ -101,6 +114,7 @@
     /* 右下角：两个控制（开合、纹样） */
     #controls {
       position: absolute;
+      z-index: 2;
       right: 20px;
       bottom: 20px;
       display: flex;
@@ -237,6 +251,7 @@
 
     <!-- 中间 3D 展台 + 右下角控制 -->
     <section id="stage-wrap">
+      <div id="stage-bg"></div>
       <canvas id="stage"></canvas>
       <div id="controls">
         <label>
