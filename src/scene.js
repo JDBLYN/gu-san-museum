@@ -9,8 +9,8 @@ import * as THREE from 'three';
 
 // 主光的固定参数
 const KEY_DISTANCE = 4;        // 主光离伞中心的距离（固定，只改角度）
-const KEY_ANGLE_DEFAULT = 30;  // 默认仰角（度）：斜后上方
-const KEY_COLOR = 0xffe3b3;    // 主光颜色：暖黄（桐油纸的暖调）
+const KEY_ANGLE_DEFAULT = 29;  // 主光仰角（度）：斜后上方
+const KEY_COLOR = 0xfff3e7;    // 主光颜色：5800K 暖白（桐油纸的暖调）
 
 // 把主光放到“斜后上方”。
 // angleDeg 是仰角：0 = 水平后方，90 = 正头顶。
@@ -49,7 +49,7 @@ export function createStage(canvas) {
   scene.add(keyLight.target); // 主光的目标（伞中心）也要加入场景，影子才对
 
   // 环境光：很弱，只让暗部不至于全黑（这样伞骨才能显成深色剪影）
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
   scene.add(buildBackdrop()); // 逆光光晕：让透光有“亮”可透
 
@@ -58,7 +58,7 @@ export function createStage(canvas) {
 
 // 主光：一盏逆光，从伞的斜后上方打过来
 function buildKeyLight() {
-  const light = new THREE.DirectionalLight(KEY_COLOR, 2.5);
+  const light = new THREE.DirectionalLight(KEY_COLOR, 1.2);
   light.castShadow = true;
   light.shadow.mapSize.set(1024, 1024);
   light.shadow.radius = 6;   // 阴影边缘柔化
