@@ -13,6 +13,9 @@ import { createUmbrella } from './umbrella.js';
 const canvas = document.getElementById('stage');
 const { renderer, scene, camera } = createStage(canvas);
 
+const loadingEl = document.getElementById('loading'); // 加载提示层
+let firstFrameShown = false; // 第一把伞是否已经画出来（画出来就撤掉提示）
+
 // 拖动旋转 + 滚轮缩放（OrbitControls 是三件套自带的现成控件）
 const controls = new OrbitControls(camera, canvas);
 controls.target.set(0, 0.1, 0); // 围绕伞的中心转
@@ -29,6 +32,11 @@ let currentPattern = null; // 当前纹样文件名（null = 无贴图 / 纯色�
 const ROTATION_SPEED = 0.0015; // 自转速度：弧度/帧，越小越慢（60 帧/秒下约 70 秒一圈）
 const FADE_MS = 200;           // 切纹样淡入淡出：前后各 200 毫秒，共 400 毫秒
 let fade = null;               // 正在进行的淡入淡出（null = 没有）
+
+// 系统「减少动态效果」：开着就不自转。启动时读一次，中途系统切换也跟着变。
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let autoRotate = !reduceMotion.matches;
+reduceMotion.addEventListener('change', (e) => { autoRotate = !e.matches; });
 
 // 贴图统一从这里加载：路径来自 umbrellas.json，这里不写死任何图片路径。
 // 纹样清单、两张材质贴图的路径都在数据文件里，等数据读回来再加载。
@@ -352,10 +360,16 @@ function renderCraft(panelId, steps) {
 // —— 动画循环：伞缓慢自转，每一帧画一次 ——
 function animate() {
   requestAnimationFrame(animate);
-  if (umbrella) umbrella.rotation.y += ROTATION_SPEED; // 缓慢自转
+  if (umbrella && autoRotate) umbrella.rotation.y += ROTATION_SPEED; // 缓慢自转（系统开了「减少动态」就停）
   updateFade(); // 切纹样的淡入淡出
   controls.update();
   renderer.render(scene, camera);
+
+  // 第一把伞画出来之后，撤掉加载提示（不再白屏干等）
+  if (umbrella && !firstFrameShown) {
+    firstFrameShown = true;
+    loadingEl.classList.add('hidden');
+  }
 }
 
 // 窗口大小变化时，重新匹配画布尺寸
