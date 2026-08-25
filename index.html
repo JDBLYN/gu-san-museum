@@ -347,9 +347,16 @@
         grid-template-rows: auto auto;
       }
 
-      /* 目录：手机端整块去掉（只有一把伞，没必要占地方） */
+      /* 目录：手机端改成顶部一条，左右滑动选伞（现在有 8 把伞，不能再藏） */
       #catalog {
-        display: none;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-right: none;
+        border-bottom: var(--border-w) solid var(--line);
+        padding: 10px 16px;
+        gap: 4px;
       }
       #catalog button {
         flex: 0 0 auto;             /* 每项按自己宽度排，不拉伸 */
