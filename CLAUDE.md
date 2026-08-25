@@ -42,12 +42,12 @@ gu-san-museum/
 
 
 ## 已有素材（不要引用清单以外的文件名）
-assets/patterns/：peony-crimson.png、westlake-ink.png、plum-ink.png、
-  lotus-scroll.png、crane-cloud.png、bat-fortune.png、
-  rain-bamboo.png、cloud-thunder.png
+assets/patterns/：peony-crimson.jpg、westlake-ink.jpg、plum-ink.jpg、
+  lotus-scroll.jpg、crane-cloud.jpg、bat-fortune.jpg、
+  rain-bamboo.jpg、cloud-thunder.jpg
 assets/textures/：bamboo-rib.png、wood-handle.png
-assets/misc/：hall-bg.png、share-cover.png
-assets/craft/：craft-01.png ~ craft-08.png
+assets/misc/：hall-bg.jpg、share-cover.jpg
+assets/craft/：craft-01.jpg ~ craft-08.jpg
 
 
 如果需要一张清单里没有的图，先停下来告诉我要生什么图、

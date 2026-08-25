@@ -1,14 +1,14 @@
 {
   "patterns": [
     { "name": "无贴图", "file": null },
-    { "name": "牡丹·朱红", "file": "peony-crimson.png" },
-    { "name": "西湖·墨", "file": "westlake-ink.png" },
-    { "name": "梅花·墨", "file": "plum-ink.png" },
-    { "name": "莲花·卷草", "file": "lotus-scroll.png" },
-    { "name": "仙鹤·云", "file": "crane-cloud.png" },
-    { "name": "蝙蝠·福", "file": "bat-fortune.png" },
-    { "name": "雨竹", "file": "rain-bamboo.png" },
-    { "name": "云雷", "file": "cloud-thunder.png" }
+    { "name": "牡丹·朱红", "file": "peony-crimson.jpg" },
+    { "name": "西湖·墨", "file": "westlake-ink.jpg" },
+    { "name": "梅花·墨", "file": "plum-ink.jpg" },
+    { "name": "莲花·卷草", "file": "lotus-scroll.jpg" },
+    { "name": "仙鹤·云", "file": "crane-cloud.jpg" },
+    { "name": "蝙蝠·福", "file": "bat-fortune.jpg" },
+    { "name": "雨竹", "file": "rain-bamboo.jpg" },
+    { "name": "云雷", "file": "cloud-thunder.jpg" }
   ],
   "textures": {
     "rib": "assets/textures/bamboo-rib.png",
@@ -78,56 +78,56 @@
         {
           "name": "选竹",
           "desc": "挑选竹身挺直、竹节均匀、没有虫蛀霉变的成熟楠竹。竹料是整把伞的底子，选得不好，伞骨容易断、容易变形，后面工序再用心也难补救。",
-          "image": "assets/craft/craft-01.png",
+          "image": "assets/craft/craft-01.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "制骨",
           "desc": "把竹料剖成细条，再一步步削、磨成粗细均匀的伞骨。骨条粗细不一，伞面撑开后就会歪斜不平；削得均匀，伞形才周正，开合才顺滑。",
-          "image": "assets/craft/craft-02.png",
+          "image": "assets/craft/craft-02.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "装架",
           "desc": "在伞骨上钻好孔，装进上巢、下巢，再套到中棒上，让骨条能绕中棒开合。孔位或巢位对不齐，伞一开骨条就互相卡住，整把伞就废了。",
-          "image": "assets/craft/craft-03.png",
+          "image": "assets/craft/craft-03.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "满穿",
           "desc": "用线在伞骨之间一圈圈穿绕，把整副骨架连成一体。满穿能拉住每一根骨条、让伞面受力均匀；穿得松或漏穿，伞面会塌，也容易被风吹翻。",
-          "image": "assets/craft/craft-04.png",
+          "image": "assets/craft/craft-04.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "裱面",
           "desc": "把手工皮纸按伞面裁好，一张张糊到伞骨上，拼成完整的伞面。糊得不平、留气泡或接缝不严，上油后就会起皱漏水，伞就挡不住雨了。",
-          "image": "assets/craft/craft-05.png",
+          "image": "assets/craft/craft-05.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "石印",
           "desc": "用传统的石印手艺在伞面上印出图案花纹，让素面变成有纹样的伞面。这道工序要把图案印得位置正、纹路清晰；印偏或印糊了，整面伞面就花了，只能揭掉纸重新来过。",
-          "image": "assets/craft/craft-06.png",
+          "image": "assets/craft/craft-06.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "上油",
           "desc": "在伞面上一遍遍刷桐油，让纸吃透油、变得防水耐用。油刷不匀或没刷透，伞面会渗水、发脆；刷匀了，伞面才经得起雨淋日晒。",
-          "image": "assets/craft/craft-07.png",
+          "image": "assets/craft/craft-07.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         },
         {
           "name": "成伞",
           "desc": "把上好油的伞撑开晾干，让桐油干透定型，再收边、装上手柄，一把伞才算完成。没晾干就收，伞面会粘连、变形，前面的功夫就白费了。",
-          "image": "assets/craft/craft-08.png",
+          "image": "assets/craft/craft-08.jpg",
           "level": "史实",
           "_source": "https://www.ihchina.cn/art/detail/id/11476.html"
         }
@@ -150,7 +150,7 @@
         "shaftLength": 66
       },
       "material": {
-        "canopyTexture": "westlake-ink.png",
+        "canopyTexture": "westlake-ink.jpg",
         "canopyColor": "#e9c97e",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -196,56 +196,56 @@
         {
           "name": "选竹",
           "desc": "挑选三至五年生的成熟毛竹作伞骨原料，竹料要挺直、竹节均匀。竹选得不好，伞骨容易断、容易变形。",
-          "image": "assets/craft/craft-01.png",
+          "image": "assets/craft/craft-01.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "制骨",
           "desc": "把竹筒锯成段、刮去青皮，再劈成细条伞骨，打眼、穿伞，做成伞架。骨条粗细不一，伞形就不周正，开合也不顺滑。",
-          "image": "assets/craft/craft-02.png",
+          "image": "assets/craft/craft-02.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "浸纸",
           "desc": "伞面用的桃花纸先浸入柿漆——柿漆用青油柿捣汁制成，有黏性又不粘纸，还能防水。浸得不匀，纸面会渗水。",
-          "image": "assets/craft/craft-03.png",
+          "image": "assets/craft/craft-03.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "糊面",
           "desc": "把浸过柿漆的桃花纸一张张糊到伞骨上，拼成完整伞面。糊得不平、留气泡，伞面会起皱漏水。",
-          "image": "assets/craft/craft-04.png",
+          "image": "assets/craft/craft-04.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "阴干",
           "desc": "刚糊好的伞不能暴晒，要挂在室内慢慢阴干，纸面才平整不裂。急着晒干，纸会发脆变形。",
-          "image": "assets/craft/craft-05.png",
+          "image": "assets/craft/craft-05.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "绘花",
           "desc": "在干透的伞面上手绘山水、花鸟等图案，也可保持素面。手绘是余杭纸伞的装饰特色。",
-          "image": "assets/craft/craft-06.png",
+          "image": "assets/craft/craft-06.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "上油",
           "desc": "把桐油（或熟桐油）一层层均匀刷在伞面，起防腐、拒变的作用。油刷不匀，伞面会渗水发脆。",
-          "image": "assets/craft/craft-07.png",
+          "image": "assets/craft/craft-07.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         },
         {
           "name": "装柄",
           "desc": "装上手柄、收边定型，一把余杭纸伞才算完成。收边不牢，伞面容易开线。",
-          "image": "assets/craft/craft-08.png",
+          "image": "assets/craft/craft-08.jpg",
           "level": "史实",
           "_source": "https://wgly.hangzhou.gov.cn/art/2024/3/8/art_1229733878_58953881.html"
         }
@@ -266,7 +266,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "plum-ink.png",
+        "canopyTexture": "plum-ink.jpg",
         "canopyColor": "#8a8478",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -325,7 +325,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "lotus-scroll.png",
+        "canopyTexture": "lotus-scroll.jpg",
         "canopyColor": "#e6c07a",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -384,7 +384,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "crane-cloud.png",
+        "canopyTexture": "crane-cloud.jpg",
         "canopyColor": "#c9a06a",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -443,7 +443,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "bat-fortune.png",
+        "canopyTexture": "bat-fortune.jpg",
         "canopyColor": "#c23b2e",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -502,7 +502,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "rain-bamboo.png",
+        "canopyTexture": "rain-bamboo.jpg",
         "canopyColor": "#e2b86a",
         "transmission": 0.85,
         "roughness": 0.5,
@@ -561,7 +561,7 @@
         "openAmount": 1
       },
       "material": {
-        "canopyTexture": "cloud-thunder.png",
+        "canopyTexture": "cloud-thunder.jpg",
         "canopyColor": "#d9a95e",
         "transmission": 0.85,
         "roughness": 0.5,
